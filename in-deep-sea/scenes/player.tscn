@@ -1,0 +1,34 @@
+[gd_scene format=3 uid="uid://dldvgetyrngc3"]
+
+[ext_resource type="Script" uid="uid://brb8rjyfb10rn" path="res://scripts/player.gd" id="1_g2els"]
+[ext_resource type="Texture2D" uid="uid://brw7q2x1oh3an" path="res://Cleitinho_In_Deep_Sea.PNG" id="2_g2els"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_46gv6"]
+radius = 37.0
+height = 174.0
+
+[node name="Player" type="CharacterBody2D" unique_id=1396639506]
+script = ExtResource("1_g2els")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1084155391]
+shape = SubResource("CapsuleShape2D_46gv6")
+
+[node name="Dash Timer" type="Timer" parent="." unique_id=930286986]
+
+[node name="Dash Cooldown" type="Timer" parent="." unique_id=871185824]
+wait_time = 0.3
+
+[node name="RayCast2D" type="RayCast2D" parent="." unique_id=990038641]
+target_position = Vector2(300, 0)
+
+[node name="Line2D" type="Line2D" parent="." unique_id=538459976]
+
+[node name="CleitinhoInDeepSea" type="Sprite2D" parent="." unique_id=721804209]
+position = Vector2(-1.9999695, -8)
+scale = Vector2(0.1, 0.1)
+texture = ExtResource("2_g2els")
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=792209334]
+zoom = Vector2(0.5, 0.5)
+
+[connection signal="timeout" from="Dash Cooldown" to="." method="_on_dash_cooldown_timeout"]
