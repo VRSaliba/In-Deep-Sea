@@ -1,31 +1,53 @@
 extends CharacterBody2D
 
-@onready var dash_cooldown: Timer = $"Dash Cooldown"
-@onready var ray: RayCast2D = $RayCast2D
-@onready var rope: Line2D = $Line2D
+@export var speed := 640.0
+@export var jump_speed := 800.0
+@export var gravity := 1400.0
 
-@export var speed := 520.0
-@export var jump_speed := 500.0
-@export var gravity := 1200.0
+# Horizontal feel
+@export var ground_accel := 3200.0       # how fast you speed up
+@export var ground_friction := 3200.0   # how fast you slide to a stop
+@export var air_accel := 1400.0          # ~half of ground (Mario halves it)
+@export var air_friction := 200.0       # very little air drag
 
-# Acceleration / deceleration (pixels per second²)
-@export var ground_accel := 1400.0
-@export var ground_decel := 3800.0
-@export var air_accel := 1200.0
-@export var air_decel := 10.0
+# Variable jump
+@export var jump_release_velocity_factor := 0.2  # on release, multiply current upward velocity by this
+@export var jump_release_gravity := 4   # extra gravity multiplier during the release window
+@export var jump_release_duration := 0.15  # how long the extra gravity lasts (seconds)
 
+var release_timer := 0.0
+var jump_was_pressed := false
+var is_jumping := false
+
+# Coyete jump
+@export var coyote_time := 0.1      # grace period after leaving the ground
+
+var coyote_timer := 0.0
+
+# Jumping buffer before landing
+@export var jump_buffer_time := 0.1 # grace period before landing
+
+var jump_buffer_timer := 0.0
+
+# --- Dash ---
 @export var dash_speed := 1500.0
 @export var dash_duration := 0.15
 @export var dash_push_factor := 0.8
+@onready var dash_cooldown: Timer = $"Dash Cooldown"
 
-# --- Grapple ---
+# --- Grapple / swing ---
+@onready var ray: RayCast2D = $RayCast2D
+@onready var rope: Line2D = $Line2D
 @export var rope_max_length := 10000.0
 @export var spring_stiffness := 40.0
 @export var spring_damping := 1.75
 @export var reel_speed := 400.0
+@export var swing_gravity_scale := 0.6      # gravity multiplier while hooked
+@export var swing_input_influence := 0.4     # how much left/right input affects swing
+@export var swing_max_speed := 2000.0        # clamp to prevent oscillation blowup
+
 
 var can_dash := true
-var can_air_dash := true
 var can_jump := true
 
 var dash_timer := 0.0
@@ -44,28 +66,46 @@ func _ready() -> void:
 
 
 func _physics_process(delta: float) -> void:
+	_handle_grapple_input()
+
+	if is_grappling:
+		_update_grapple_movement(delta)
+	else:
+		_update_walking_movement(delta)
+
+	move_and_slide()
+	_handle_collisions()
+
+# ============================================================
+#  WALKING SYSTEM (unhooked) — Mario-style
+# ============================================================
+
+func _update_walking_movement(delta: float) -> void:
+	# --- Coyote & buffer timers ---
+	if is_on_floor():
+		coyote_timer = coyote_time
+		is_jumping = false
+	else:
+		coyote_timer -= delta
+
+	if jump_buffer_timer > 0.0:
+		jump_buffer_timer -= delta
+
 	# --- Gravity ---
 	if not is_on_floor():
-		velocity.y += gravity * delta
+		var g := gravity
+		if release_timer > 0.0 and velocity.y < 0:
+			g *= jump_release_gravity
+			release_timer -= delta
+		velocity.y += g * delta
 
-	# --- Reset air dash on landing ---
-	if is_on_floor():
-		can_air_dash = true
+	# Detect release
+	if jump_was_pressed and not Input.is_action_pressed("jump") and velocity.y < 0:
+		release_timer = jump_release_duration
+	jump_was_pressed = Input.is_action_pressed("jump")
 
-	# --- Dash input ---
-	if Input.is_action_just_pressed("dash") and dash_timer <= 0.0 and can_dash and (is_on_floor() or can_air_dash):
-		can_dash = false
-		dash_cooldown.start()
-		if not is_on_floor():
-			can_air_dash = false
-		var dir := Input.get_vector("move_left", "move_right", "up", "down")
-		if dir == Vector2.ZERO:
-			dir = Vector2.RIGHT
-		dash_direction = dir
-		dash_timer = dash_duration
-
-	# --- Grapple input ---
-	_handle_grapple_input()
+	# --- Dash ---
+	_try_dash()
 
 	# --- Horizontal movement ---
 	if dash_timer > 0.0:
@@ -78,31 +118,79 @@ func _physics_process(delta: float) -> void:
 		if direction != 0.0:
 			rate = ground_accel if is_on_floor() else air_accel
 		else:
-			rate = ground_decel if is_on_floor() else air_decel
+			rate = ground_friction if is_on_floor() else air_friction
 		velocity.x = move_toward(velocity.x, target, rate * delta)
 
-	# --- Jump ---
-	if is_on_floor() or dash_timer > 0.0:
-		can_jump = true
-	else:
-		can_jump = false
+	# --- Jump (buffered + coyote) ---
+	if Input.is_action_just_pressed("jump"):
+		jump_buffer_timer = jump_buffer_time
 
-	if Input.is_action_just_pressed("jump") and can_jump:
+	if coyote_timer > 0.0 and jump_buffer_timer > 0.0:
 		velocity.y = -jump_speed
+		release_timer = 0.0
+		jump_was_pressed = true
+		coyote_timer = 0.0
+		jump_buffer_timer = 0.0   
 
-	# --- Grapple physics ---
-	if is_grappling:
-		_apply_grapple_physics(delta)
 
-	# --- Move & push ---
-	move_and_slide()
+func _try_dash() -> void:
+	if Input.is_action_just_pressed("dash") and dash_timer <= 0.0 and can_dash:
+		can_dash = false
+		dash_cooldown.start()
+		var dir := Input.get_vector("move_left", "move_right", "up", "down")
+		if dir == Vector2.ZERO:
+			dir = Vector2.RIGHT
+		dash_direction = dir
+		dash_timer = dash_duration   
 
-	for i in get_slide_collision_count():
-		var c = get_slide_collision(i)
-		var collider = c.get_collider()
-		if collider is RigidBody2D:
-			collider.apply_central_impulse(-c.get_normal() * velocity.length() * dash_push_factor)
+# ============================================================
+#  GRAPPLE / SWING SYSTEM (hooked)
+# ============================================================
 
+func _update_grapple_movement(delta: float) -> void:
+	# Reduced gravity while swinging
+	velocity.y += gravity * swing_gravity_scale * delta
+
+	# Reel in
+	if Input.is_action_pressed("reel") and rope_length > 1.0:
+		var reel_step := reel_speed * delta
+		rope_length = maxf(rope_length - reel_step, 20.0)
+		var to_anchor := grapple_anchor - global_position
+		if to_anchor.length() > 1.0:
+			velocity += to_anchor.normalized() * reel_speed * delta
+
+	# Elastic rope
+	var to_anchor := grapple_anchor - global_position
+	var dist := to_anchor.length()
+	var stretch := dist - rope_length
+	if stretch > 0.0:
+		var rope_dir := to_anchor.normalized()
+		velocity += rope_dir * stretch * spring_stiffness * delta
+		var radial_vel := velocity.dot(-rope_dir)
+		if radial_vel > 0.0:
+			velocity += rope_dir * radial_vel * spring_damping * delta
+
+	# Player input influence (pump the swing)
+	var direction := Input.get_axis("move_left", "move_right")
+	if direction != 0.0:
+		velocity.x += direction * swing_input_influence * speed * delta
+
+	# Speed clamp
+	if velocity.length() > swing_max_speed:
+		velocity = velocity.normalized() * swing_max_speed
+
+	# Rope visual
+	rope.set_point_position(0, global_position - rope.global_position)
+	rope.set_point_position(1, to_local(grapple_anchor))
+
+	# Auto-release if too close
+	if dist < 10.0:
+		_release_grapple()
+
+
+# ============================================================
+#  SHARED
+# ============================================================
 
 func _handle_grapple_input() -> void:
 	if Input.is_action_just_pressed("grapple"):
@@ -132,33 +220,13 @@ func _release_grapple() -> void:
 	rope.hide()
 
 
-func _apply_grapple_physics(delta: float) -> void:
-	var to_anchor := grapple_anchor - global_position
-	var dist := to_anchor.length()
-
-	# --- Reel in ---
-	if Input.is_action_pressed("reel") and dist > 1.0:
-		var reel_step := reel_speed * delta
-		rope_length = maxf(rope_length - reel_step, 20.0)
-		velocity += to_anchor.normalized() * reel_speed * delta
-
-	# --- Elastic rope (spring) ---
-	var stretch := dist - rope_length
-	if stretch > 0.0:
-		var rope_dir := to_anchor.normalized()
-		velocity += rope_dir * stretch * spring_stiffness * delta
-		var radial_vel := velocity.dot(-rope_dir)
-		if radial_vel > 0.0:
-			velocity += rope_dir * radial_vel * spring_damping * delta
-
-	# --- Update rope visual ---
-	rope.set_point_position(0, global_position - rope.global_position)
-	rope.set_point_position(1, to_local(grapple_anchor))
-
-	# Auto-release if too close
-	if dist < 10.0:
-		_release_grapple()
+func _handle_collisions() -> void:
+	for i in get_slide_collision_count():
+		var c = get_slide_collision(i)
+		var collider = c.get_collider()
+		if collider is RigidBody2D:
+			collider.apply_central_impulse(-c.get_normal() * velocity.length() * dash_push_factor)
 
 
 func _on_dash_cooldown_timeout() -> void:
-	can_dash = true   
+	can_dash = true
