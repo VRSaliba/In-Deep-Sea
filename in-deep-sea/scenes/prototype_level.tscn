@@ -11,6 +11,12 @@ size = Vector2(128, 129)
 
 [node name="Prototype Level" type="Node2D" unique_id=1537150610]
 
+[node name="Icon" type="Sprite2D" parent="." unique_id=106154546]
+modulate = Color(1, 1, 1, 0.15294118)
+position = Vector2(-424, 3701)
+scale = Vector2(39.681408, 35.003956)
+texture = ExtResource("1_kvexg")
+
 [node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=2119734694]
 position = Vector2(397.00003, 562)
 scale = Vector2(4.3952975, 0.4624751)
@@ -127,6 +133,18 @@ modulate = Color(0, 0, 0, 1)
 texture = ExtResource("1_kvexg")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D12" unique_id=894209688]
+position = Vector2(0, 0.5)
+shape = SubResource("RectangleShape2D_8jvw5")
+
+[node name="StaticBody2D13" type="StaticBody2D" parent="." unique_id=1903675625]
+position = Vector2(-420.99988, 3713.9998)
+scale = Vector2(2.9505277, 0.5446551)
+
+[node name="Sprite2D" type="Sprite2D" parent="StaticBody2D13" unique_id=1718302330]
+modulate = Color(0, 0, 0, 1)
+texture = ExtResource("1_kvexg")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D13" unique_id=355366352]
 position = Vector2(0, 0.5)
 shape = SubResource("RectangleShape2D_8jvw5")
 

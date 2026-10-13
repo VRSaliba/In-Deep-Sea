@@ -28,7 +28,9 @@ position = Vector2(-1.9999695, -8)
 scale = Vector2(0.1, 0.1)
 texture = ExtResource("2_g2els")
 
-[node name="Camera2D" type="Camera2D" parent="." unique_id=792209334]
+[node name="Camera2D" type="Camera2D" parent="." unique_id=649698288]
 zoom = Vector2(0.5, 0.5)
+position_smoothing_enabled = true
+position_smoothing_speed = 8.0
 
 [connection signal="timeout" from="Dash Cooldown" to="." method="_on_dash_cooldown_timeout"]
