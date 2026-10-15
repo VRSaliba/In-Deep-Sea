@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://brw7q2x1oh3an"
-path="res://.godot/imported/Cleitinho_In_Deep_Sea.PNG-8a9469eb9e7b6d18f9bf30b178deed37.ctex"
+uid="uid://culstkn02qsko"
+path="res://.godot/imported/world_tileset.png-2aad7ba2af19ce6082a9563174573b1c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Cleitinho_In_Deep_Sea.PNG"
-dest_files=["res://.godot/imported/Cleitinho_In_Deep_Sea.PNG-8a9469eb9e7b6d18f9bf30b178deed37.ctex"]
+source_file="res://resources/world_tileset.png"
+dest_files=["res://.godot/imported/world_tileset.png-2aad7ba2af19ce6082a9563174573b1c.ctex"]
 
 [params]
 

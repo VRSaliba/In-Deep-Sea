@@ -1,4 +1,7 @@
 extends CharacterBody2D
+class_name Player
+
+@onready var camera: Camera2D = $Camera2D
 
 # ============================================================
 #  MOVEMENT
@@ -63,13 +66,12 @@ var is_grappling := false
 var grapple_anchor := Vector2.ZERO
 var rope_length := 0.0
 
-
 func _ready() -> void:
+	camera.make_current()
 	ray.enabled = true
 	rope.add_point(Vector2.ZERO)
 	rope.add_point(Vector2.ZERO)
 	rope.width = 2.0
-
 
 func _physics_process(delta: float) -> void:
 	_handle_grapple_input()
@@ -81,7 +83,6 @@ func _physics_process(delta: float) -> void:
 
 	move_and_slide()
 	_handle_collisions()
-
 
 # ============================================================
 #  WALKING SYSTEM (unhooked)
@@ -149,7 +150,6 @@ func _update_walking_movement(delta: float) -> void:
 		coyote_timer = 0.0
 		jump_buffer_timer = 0.0
 
-
 # ============================================================
 #  GRAPPLE / SWING SYSTEM (hooked)
 # ============================================================
@@ -205,12 +205,10 @@ func _update_grapple_movement(delta: float) -> void:
 	if dist < 10.0:
 		_release_grapple()
 
-
 func _update_rope_visual() -> void:
 	var to_anchor := grapple_anchor - global_position
 	rope.set_point_position(0, global_position - rope.global_position)
 	rope.set_point_position(1, to_local(grapple_anchor))
-
 
 # ============================================================
 #  DASH
@@ -227,13 +225,11 @@ func _try_dash() -> void:
 		dash_timer = dash_duration
 		_perform_dash()
 
-
 func _perform_dash() -> void:
 	var current_speed := absf(velocity.x)
 	var dash_factor := 1.0 - (current_speed / dash_falloff_speed) * 0.8
 	velocity.x += dash_direction.x * dash_speed * maxf(dash_factor, 0.0)
 	velocity.x = clampf(velocity.x, -swing_max_speed, swing_max_speed)
-
 
 # ============================================================
 #  SHARED
@@ -245,7 +241,6 @@ func _handle_grapple_input() -> void:
 			_release_grapple()
 		else:
 			_try_grapple()
-
 
 func _try_grapple() -> void:
 	var aim_dir := (get_global_mouse_position() - global_position).normalized()
@@ -261,12 +256,10 @@ func _try_grapple() -> void:
 		dash_timer = 0.0
 		rope.show()
 
-
 func _release_grapple() -> void:
 	is_grappling = false
 	rope_length = 0.0
 	rope.hide()
-
 
 func _handle_collisions() -> void:
 	for i in get_slide_collision_count():
@@ -274,7 +267,6 @@ func _handle_collisions() -> void:
 		var collider = c.get_collider()
 		if collider is RigidBody2D:
 			collider.apply_central_impulse(-c.get_normal() * velocity.length() * dash_push_factor)
-
 
 func _on_dash_cooldown_timeout() -> void:
 	can_dash = true   
