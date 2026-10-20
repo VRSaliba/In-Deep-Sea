@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://dr2njxtavrur4"]
 
 [ext_resource type="Script" uid="uid://b65gktnry386a" path="res://scripts/next_level_collision.gd" id="1_uxcxk"]
+[ext_resource type="Texture2D" uid="uid://c2ddhstms8yxg" path="res://icon.svg" id="2_wadyl"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_x07em"]
 size = Vector2(126, 118)
@@ -10,3 +11,6 @@ script = ExtResource("1_uxcxk")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1915652780]
 shape = SubResource("RectangleShape2D_x07em")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1389651979]
+texture = ExtResource("2_wadyl")

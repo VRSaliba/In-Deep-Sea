@@ -1,0 +1,22 @@
+[gd_scene format=3 uid="uid://dfhxghuvtedak"]
+
+[ext_resource type="Texture2D" uid="uid://c2ddhstms8yxg" path="res://icon.svg" id="1_2yctu"]
+[ext_resource type="Script" uid="uid://dhvncpq80yvig" path="res://scripts/trampoline.gd" id="1_nytqh"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_kcfq5"]
+size = Vector2(146, 27)
+
+[node name="Trampoline" type="Area2D" unique_id=1558977942]
+script = ExtResource("1_nytqh")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1421809525]
+modulate = Color(1, 1, 0, 1)
+position = Vector2(1.000001, 0.9999996)
+scale = Vector2(1.15625, 0.21875)
+texture = ExtResource("1_2yctu")
+
+[node name="Jump collision" type="CollisionShape2D" parent="." unique_id=109966744]
+position = Vector2(1, 1.5)
+shape = SubResource("RectangleShape2D_kcfq5")
+
+[connection signal="body_entered" from="." to="." method="_on_jump_area_body_entered"]

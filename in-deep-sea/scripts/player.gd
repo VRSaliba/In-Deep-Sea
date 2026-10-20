@@ -67,6 +67,8 @@ var grapple_anchor := Vector2.ZERO
 var rope_length := 0.0
 
 func _ready() -> void:
+	GlobalSignals.trampoline_collided.connect(step_on_trampoline)
+	
 	camera.make_current()
 	ray.enabled = true
 	rope.add_point(Vector2.ZERO)
@@ -270,3 +272,6 @@ func _handle_collisions() -> void:
 
 func _on_dash_cooldown_timeout() -> void:
 	can_dash = true   
+
+func step_on_trampoline(jump_force: float) -> void:
+	velocity.y = -jump_force
