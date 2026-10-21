@@ -51,6 +51,16 @@ class_name Player
 @export var wall_drag_rate := 5.0
 
 # ============================================================
+#  CAMERA ZOOM
+# ============================================================
+@export var zoom_max_speed := 2000.0
+@export var min_zoom := 0.45 # When char is slow
+@export var max_zoom := 0.65 # When char is slow
+@export var zoom_smooth := 3.5
+@export var grapple_pan_factor := 0.5   # How much the camera leans toward the hook
+@export var pan_smooth := 8.0           # How fast the pan eases in/out
+
+# ============================================================
 #  STATE
 # ============================================================
 var can_dash := true
@@ -68,6 +78,7 @@ var rope_length := 0.0
 
 func _ready() -> void:
 	GlobalSignals.player_died.connect(die)
+	GlobalSignals.trampoline_collided.connect(step_on_trampoline)
 	
 	camera.make_current()
 	ray.enabled = true
@@ -94,6 +105,7 @@ func _physics_process(delta: float) -> void:
 
 	move_and_slide()
 	_handle_collisions()
+	_update_camera(delta)
 
 # ============================================================
 #  WALKING SYSTEM (unhooked)
@@ -279,5 +291,23 @@ func _handle_collisions() -> void:
 		if collider is RigidBody2D:
 			collider.apply_central_impulse(-c.get_normal() * velocity.length() * dash_push_factor)
 
+func _update_camera(delta: float) -> void:
+	# --- Zoom (speed-based) ---
+	var current_speed := velocity.length()
+	var t := clampf(current_speed / zoom_max_speed, 0.0, 1.0)
+	var target_zoom := lerpf(max_zoom, min_zoom, t)
+	var new_zoom := lerpf(camera.zoom.x, target_zoom, 1.0 - exp(-zoom_smooth * delta))
+	camera.zoom = Vector2(new_zoom, new_zoom)
+
+	# --- Pan toward grapple anchor ---
+	var target_offset := Vector2.ZERO
+	if is_grappling:
+		target_offset = (grapple_anchor - global_position) * grapple_pan_factor
+
+	camera.offset = camera.offset.lerp(target_offset, 1.0 - exp(-pan_smooth * delta))
+
 func _on_dash_cooldown_timeout() -> void:
 	can_dash = true   
+
+func step_on_trampoline(jump_force: float) -> void:
+	velocity.y = -jump_force
