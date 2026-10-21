@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://c0jq10p5iulqu" path="res://scenes/world_boundary.tscn" id="3_rus8k"]
 [ext_resource type="PackedScene" uid="uid://dr2njxtavrur4" path="res://scenes/next_level_collision.tscn" id="5_4nkto"]
 [ext_resource type="PackedScene" uid="uid://1w83hqlrkygx" path="res://scenes/level_2.tscn" id="6_fcfvj"]
+[ext_resource type="PackedScene" uid="uid://da0iw28yeojgd" path="res://scenes/ourico_do_mar.tscn" id="7_pa8r4"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_fcfvj"]
 texture = ExtResource("1_bswci")
@@ -159,3 +160,24 @@ collision_layer = 2
 [node name="NextLevelCollision" parent="." unique_id=707697642 instance=ExtResource("5_4nkto")]
 position = Vector2(6446, 293)
 next_level_reference = ExtResource("6_fcfvj")
+
+[node name="Ourico do mar" parent="." unique_id=1022729656 instance=ExtResource("7_pa8r4")]
+position = Vector2(5425, 90)
+
+[node name="Ourico do mar2" parent="." unique_id=1640304103 instance=ExtResource("7_pa8r4")]
+position = Vector2(5425, 141)
+
+[node name="Ourico do mar3" parent="." unique_id=851007179 instance=ExtResource("7_pa8r4")]
+position = Vector2(5425, 192)
+
+[node name="Ourico do mar4" parent="." unique_id=10164849 instance=ExtResource("7_pa8r4")]
+position = Vector2(5463, 222)
+
+[node name="Ourico do mar5" parent="." unique_id=119863577 instance=ExtResource("7_pa8r4")]
+position = Vector2(5498, 190)
+
+[node name="Ourico do mar6" parent="." unique_id=1625542631 instance=ExtResource("7_pa8r4")]
+position = Vector2(5498, 140)
+
+[node name="Ourico do mar7" parent="." unique_id=1462557140 instance=ExtResource("7_pa8r4")]
+position = Vector2(5498, 90)

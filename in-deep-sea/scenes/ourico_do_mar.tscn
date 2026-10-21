@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://da0iw28yeojgd"]
+
+[ext_resource type="Script" uid="uid://cf02qjy7y4foj" path="res://scripts/ourico_do_mar.gd" id="1_q64d5"]
+[ext_resource type="Texture2D" uid="uid://ynsi1avrsegu" path="res://resources/ourico_do_mar.png" id="1_yk6yy"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_x07em"]
+radius = 169.99998
+
+[node name="Ourico do mar" type="Area2D" unique_id=1022729656]
+scale = Vector2(0.1, 0.1)
+script = ExtResource("1_q64d5")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=796852426]
+modulate = Color(0.15487596, 0.154876, 0.15487596, 1)
+texture = ExtResource("1_yk6yy")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=391376308]
+shape = SubResource("CircleShape2D_x07em")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

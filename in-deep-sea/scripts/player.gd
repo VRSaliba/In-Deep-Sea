@@ -67,11 +67,22 @@ var grapple_anchor := Vector2.ZERO
 var rope_length := 0.0
 
 func _ready() -> void:
+	GlobalSignals.player_died.connect(die)
+	
 	camera.make_current()
 	ray.enabled = true
 	rope.add_point(Vector2.ZERO)
 	rope.add_point(Vector2.ZERO)
 	rope.width = 2.0
+
+func die() -> void:
+	visible = false
+	set_process(false)
+	set_physics_process(false)
+	set_process_input(false)
+	await get_tree().create_timer(2).timeout
+	#animacao do player morrendo
+	GlobalSignals.restart_level_signal.emit()
 
 func _physics_process(delta: float) -> void:
 	_handle_grapple_input()
