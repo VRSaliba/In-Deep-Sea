@@ -6,13 +6,12 @@ var current_level_packed_scene: PackedScene
 var current_level_node: Node2D
 
 func _ready() -> void:
-	GlobalSignals.player_died.connect(restart_level)
 	GlobalSignals.restart_level_signal.connect(restart_level)
 	GlobalSignals.go_to_next_level_reached.connect(change_current_level)
 	
 	change_current_level(LEVEL_1)
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	pass
 
 func change_current_level(next_level: PackedScene) -> void:

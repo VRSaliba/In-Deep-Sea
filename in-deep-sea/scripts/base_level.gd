@@ -6,18 +6,11 @@ class_name BaseLevel
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	world_boundary.body_entered.connect(_on_world_boundary_body_entered)
 	next_level_collision.body_entered.connect(_on_next_level_collision_body_entered)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	pass
-
-func _on_world_boundary_body_entered(body: Node2D) -> void:
-	print(body)
-	if body is Player:
-		await get_tree().create_timer(2).timeout
-		GlobalSignals.player_died.emit()
 
 func _on_next_level_collision_body_entered(body: Node2D) -> void:
 	if body is Player:

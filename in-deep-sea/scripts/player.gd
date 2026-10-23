@@ -41,20 +41,26 @@ class_name Player
 # ============================================================
 @onready var ray: RayCast2D = $RayCast2D
 @onready var rope: Line2D = $Line2D
+
 @export var rope_max_length := 10000.0
+@export var rope_min_length := 20.0       # Shortest the rope can get
+@export var reel_speed := 400.0   # Pixels per second when holding W/S
 @export var spring_stiffness := 150.0
 @export var spring_damping := 12
-@export var reel_speed := 400.0
-@export var swing_gravity_scale := 1
-@export var swing_input_influence := 0.85
+@export var swing_gravity_scale := 1.5
+@export var swing_input_influence := 1.25
 @export var swing_max_speed := 4000.0
 @export var wall_drag_rate := 5.0
+@export var swing_air_drag := 0.015   # Higher = swing loses speed faster
+
+var grapple_target: Node2D = null        # The body the hook stuck to
+var grapple_local_offset := Vector2.ZERO # Hit point in the body's local space
 
 # ============================================================
 #  CAMERA ZOOM
 # ============================================================
 @export var zoom_max_speed := 2000.0
-@export var min_zoom := 0.45 # When char is slow
+@export var min_zoom := 0.45 # When char is fast
 @export var max_zoom := 0.65 # When char is slow
 @export var zoom_smooth := 3.5
 @export var grapple_pan_factor := 0.5   # How much the camera leans toward the hook
@@ -76,29 +82,47 @@ var is_grappling := false
 var grapple_anchor := Vector2.ZERO
 var rope_length := 0.0
 
+# Used to draw the rope at the same interpolated position as the player
+var prev_pos := Vector2.ZERO
+var curr_pos := Vector2.ZERO
+
 func _ready() -> void:
 	GlobalSignals.player_died.connect(die)
 	GlobalSignals.trampoline_collided.connect(step_on_trampoline)
-	
+
 	camera.make_current()
 	ray.enabled = true
+
+	rope.top_level = true
+	rope.global_position = Vector2.ZERO
 	rope.add_point(Vector2.ZERO)
 	rope.add_point(Vector2.ZERO)
 	rope.width = 2.0
 
+	prev_pos = global_position
+	curr_pos = global_position
+
 func die() -> void:
+	_release_grapple()
 	visible = false
 	set_process(false)
 	set_physics_process(false)
 	set_process_input(false)
-	await get_tree().create_timer(2).timeout
-	#animacao do player morrendo
+	await get_tree().create_timer(1).timeout
+	# Player death animation
 	GlobalSignals.restart_level_signal.emit()
+
+func _process(_delta: float) -> void:
+	if is_grappling:
+		var t := Engine.get_physics_interpolation_fraction()
+		rope.set_point_position(0, prev_pos.lerp(curr_pos, t))
+		rope.set_point_position(1, grapple_anchor)
 
 func _physics_process(delta: float) -> void:
 	_handle_grapple_input()
 
 	if is_grappling:
+		_update_grapple_anchor()
 		_update_grapple_movement(delta)
 	else:
 		_update_walking_movement(delta)
@@ -106,6 +130,9 @@ func _physics_process(delta: float) -> void:
 	move_and_slide()
 	_handle_collisions()
 	_update_camera(delta)
+
+	prev_pos = curr_pos
+	curr_pos = global_position
 
 # ============================================================
 #  WALKING SYSTEM (unhooked)
@@ -177,41 +204,63 @@ func _update_walking_movement(delta: float) -> void:
 #  GRAPPLE / SWING SYSTEM (hooked)
 # ============================================================
 
+# Keeps the anchor glued to the object the hook stuck to (e.g. moving platform)
+func _update_grapple_anchor() -> void:
+	if grapple_target == null:
+		return
+	if not is_instance_valid(grapple_target):
+		# The thing we hooked was freed, so let go
+		_release_grapple()
+		return
+	grapple_anchor = grapple_target.to_global(grapple_local_offset)
+
 func _update_grapple_movement(delta: float) -> void:
 	# --- Dash ---
 	_try_dash()
 
 	if dash_timer > 0.0:
 		dash_timer -= delta
-		_update_rope_visual()
 		return
 
-	# --- Reduced gravity while swinging ---
+	# --- Gravity while swinging ---
 	velocity.y += gravity * swing_gravity_scale * delta
 
-	# --- Reel in ---
-	if Input.is_action_pressed("reel") and rope_length > 1.0:
-		var reel_step := reel_speed * delta
-		rope_length = maxf(rope_length - reel_step, 20.0)
-		var to_anchor := grapple_anchor - global_position
-		if to_anchor.length() > 1.0:
-			velocity += to_anchor.normalized() * reel_speed * delta
-
-	# --- Elastic rope ---
+	# --- Rope length control + elastic rope ---
+	var adjust := Input.get_axis("reel_in", "reel_out")   # W = -1, S = +1
 	var to_anchor := grapple_anchor - global_position
 	var dist := to_anchor.length()
-	var stretch := dist - rope_length
-	if stretch > 0.0:
-		var rope_dir := to_anchor.normalized()
-		velocity += rope_dir * stretch * spring_stiffness * delta
-		var radial_vel := velocity.dot(-rope_dir)
-		if radial_vel > 0.0:
-			velocity += rope_dir * radial_vel * spring_damping * delta
+	var rope_dir := to_anchor / dist if dist > 0.001 else Vector2.ZERO
+	var rigid := false
 
-	# --- Player input influence (pump the swing) ---
+	if adjust != 0.0:
+		if dist >= rope_length - 2.0:
+			# Rope is taut: base the new length on the real distance, so no slack or stretch builds up
+			var new_len := clampf(dist + adjust * reel_speed * delta, rope_min_length, rope_max_length)
+			rigid = (adjust < 0.0 and new_len < dist) or (adjust > 0.0 and new_len > dist)
+			rope_length = new_len
+		else:
+			# Rope is slack: just change the length and let gravity do the rest
+			rope_length = clampf(rope_length + adjust * reel_speed * delta, rope_min_length, rope_max_length)
+
+	if rigid:
+		# Move along the rope at reel speed (toward the anchor is positive), keep the sideways swing speed
+		var radial := velocity.dot(rope_dir)
+		velocity += rope_dir * (-adjust * reel_speed - radial)
+	else:
+		# Normal elastic rope
+		var stretch := dist - rope_length
+		if stretch > 0.0:
+			velocity += rope_dir * stretch * spring_stiffness * delta
+			var radial_vel := velocity.dot(-rope_dir)
+			if radial_vel > 0.0:
+				velocity += rope_dir * radial_vel * spring_damping * delta
+
+	# --- Player input influence (pump the swing) / drag when no input ---
 	var direction := Input.get_axis("move_left", "move_right")
 	if direction != 0.0:
 		velocity.x += direction * swing_input_influence * speed * delta
+	else:
+		velocity *= exp(-swing_air_drag * delta)
 
 	# --- Wall / floor / ceiling drag ---
 	if is_on_wall() or is_on_floor() or is_on_ceiling():
@@ -221,17 +270,9 @@ func _update_grapple_movement(delta: float) -> void:
 	if velocity.length() > swing_max_speed:
 		velocity = velocity.normalized() * swing_max_speed
 
-	# --- Rope visual ---
-	_update_rope_visual()
-
 	# --- Auto-release if too close ---
 	if dist < 10.0:
 		_release_grapple()
-
-func _update_rope_visual() -> void:
-	var to_anchor := grapple_anchor - global_position
-	rope.set_point_position(0, global_position - rope.global_position)
-	rope.set_point_position(1, to_local(grapple_anchor))
 
 # ============================================================
 #  DASH
@@ -274,6 +315,12 @@ func _try_grapple() -> void:
 	if ray.is_colliding():
 		is_grappling = true
 		grapple_anchor = ray.get_collision_point()
+
+		# Remember what we hit and where, relative to it
+		grapple_target = ray.get_collider() as Node2D
+		if grapple_target:
+			grapple_local_offset = grapple_target.to_local(grapple_anchor)
+
 		rope_length = global_position.distance_to(grapple_anchor)
 		rope_length = minf(rope_length, rope_max_length)
 		dash_timer = 0.0
@@ -282,6 +329,7 @@ func _try_grapple() -> void:
 func _release_grapple() -> void:
 	is_grappling = false
 	rope_length = 0.0
+	grapple_target = null
 	rope.hide()
 
 func _handle_collisions() -> void:
@@ -307,7 +355,7 @@ func _update_camera(delta: float) -> void:
 	camera.offset = camera.offset.lerp(target_offset, 1.0 - exp(-pan_smooth * delta))
 
 func _on_dash_cooldown_timeout() -> void:
-	can_dash = true   
+	can_dash = true
 
 func step_on_trampoline(jump_force: float) -> void:
 	velocity.y = -jump_force

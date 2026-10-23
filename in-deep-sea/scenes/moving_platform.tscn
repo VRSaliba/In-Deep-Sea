@@ -1,0 +1,12 @@
+[gd_scene format=4 uid="uid://bpu33gbmbr212"]
+
+[ext_resource type="Script" uid="uid://6n2w7ty6qbub" path="res://scripts/moving_platform.gd" id="1_1tdcd"]
+[ext_resource type="TileSet" uid="uid://dqooc814o4qav" path="res://resources/placeholder_tileset.tres" id="1_ms375"]
+
+[node name="Moving Platform" type="AnimatableBody2D" unique_id=1446177362]
+scale = Vector2(1.5, 1.5)
+script = ExtResource("1_1tdcd")
+
+[node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=1339234178]
+tile_map_data = PackedByteArray("AAD7/wAAAAAKAAAAAAD8/wAAAAAKAAAAAAD9/wAAAAAKAAAAAAD+/wAAAAAKAAAAAAD//wAAAAAKAAAAAAAAAAAAAAAKAAAAAAABAAAAAAAKAAAAAAACAAAAAAAKAAAAAAADAAAAAAAKAAAAAAAEAAAAAAAKAAAAAAD6/wAAAAAKAAAAAAAFAAAAAAAKAAAAAAAGAAAAAAALAAAAAAD5/wAAAAAJAAAAAAA=")
+tile_set = ExtResource("1_ms375")
