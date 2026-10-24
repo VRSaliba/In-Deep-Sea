@@ -1,6 +1,8 @@
 extends Node
 
 const LEVEL_1 = preload("uid://esv4e8s4h3q6")
+const LEVEL_2 = preload("uid://1w83hqlrkygx")
+const LEVEL_3 = preload("uid://g7err3hw88kq")
 
 var current_level_packed_scene: PackedScene
 var current_level_node: Node2D
@@ -9,7 +11,7 @@ func _ready() -> void:
 	GlobalSignals.restart_level_signal.connect(restart_level)
 	GlobalSignals.go_to_next_level_reached.connect(change_current_level)
 	
-	change_current_level(LEVEL_1)
+	change_current_level(LEVEL_3)
 
 func _process(_delta: float) -> void:
 	pass

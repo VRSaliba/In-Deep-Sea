@@ -12,8 +12,8 @@ class_name Player
 
 # Horizontal feel
 @export var ground_accel := 3200.0
-@export var ground_friction := 5000.0
-@export var ground_brake := 6000.0
+@export var ground_friction := 3500.0
+@export var ground_brake := 2500.0
 @export var air_accel := 1400.0
 @export var air_friction := 200.0
 @export var air_brake := 2000.0
@@ -30,8 +30,8 @@ class_name Player
 # ============================================================
 #  DASH
 # ============================================================
-@export var dash_speed := 1100.0
-@export var dash_duration := 0.15
+@export var dash_speed := 1200.0
+@export var dash_duration := 0.2
 @export var dash_push_factor := 0.8
 @export var dash_falloff_speed := 1500.0
 @onready var dash_cooldown: Timer = $"Dash Cooldown"
@@ -42,7 +42,7 @@ class_name Player
 @onready var ray: RayCast2D = $RayCast2D
 @onready var rope: Line2D = $Line2D
 
-@export var rope_max_length := 10000.0
+@export var rope_max_length := 1000.0
 @export var rope_min_length := 20.0       # Shortest the rope can get
 @export var reel_speed := 400.0   # Pixels per second when holding W/S
 @export var spring_stiffness := 150.0
@@ -175,9 +175,9 @@ func _update_walking_movement(delta: float) -> void:
 			var rate = ground_brake if is_on_floor() else air_brake
 			velocity.x = move_toward(velocity.x, 0.0, rate * delta)
 		elif direction != 0.0 and current_speed > speed:
-			# Above max, same direction → coast
+			# Above max, same direction → slowly decay back to max walking speed
 			var coast_rate = ground_friction if is_on_floor() else swing_coast_friction
-			velocity.x = move_toward(velocity.x, direction * current_speed, coast_rate * delta)
+			velocity.x = move_toward(velocity.x, direction * speed, coast_rate * delta)
 		elif direction != 0.0:
 			var rate = ground_accel if is_on_floor() else air_accel
 			velocity.x = move_toward(velocity.x, direction * speed, rate * delta)
