@@ -204,4 +204,24 @@ position = Vector2(535.3334, 388.6667)
 [node name="WorldBoundary" parent="." unique_id=1163350442 instance=ExtResource("7_y0kc7")]
 position = Vector2(6430, 1337)
 
+[node name="Label" type="Label" parent="." unique_id=145458239]
+z_index = -1
+offset_left = 6709.0
+offset_top = 25.0
+offset_right = 7574.0
+offset_bottom = 206.0
+mouse_filter = 1
+theme_override_font_sizes/font_size = 32
+text = "What are you doing here? Go to the next stage already..."
+
+[node name="Label2" type="Label" parent="." unique_id=124783453]
+z_index = -1
+offset_left = 9049.0
+offset_top = 1195.0
+offset_right = 9914.0
+offset_bottom = 1376.0
+mouse_filter = 1
+theme_override_font_sizes/font_size = 32
+text = "You lost?"
+
 [editable path="Moving Platform"]

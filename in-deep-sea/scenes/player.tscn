@@ -5,20 +5,20 @@
 [ext_resource type="Texture2D" uid="uid://b6q8s4d83y60n" path="res://resources/Arma-arpão-1.png" id="3_dqkch"]
 [ext_resource type="Texture2D" uid="uid://btajw8t0ueao2" path="res://resources/Arpao.png" id="4_qlg0r"]
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_46gv6"]
-radius = 37.0
-height = 174.0
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wom6i"]
+size = Vector2(47, 179)
 
 [node name="Player" type="CharacterBody2D" unique_id=1396639506]
 script = ExtResource("1_g2els")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1084155391]
-shape = SubResource("CapsuleShape2D_46gv6")
+position = Vector2(-0.5, -4.5)
+shape = SubResource("RectangleShape2D_wom6i")
 
 [node name="Dash Timer" type="Timer" parent="." unique_id=930286986]
 
 [node name="Dash Cooldown" type="Timer" parent="." unique_id=871185824]
-wait_time = 0.3
+wait_time = 0.45
 
 [node name="RayCast2D" type="RayCast2D" parent="." unique_id=990038641]
 target_position = Vector2(300, 0)

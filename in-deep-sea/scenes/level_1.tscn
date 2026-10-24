@@ -33,5 +33,19 @@ text = "A to move left
 D to move right
 Space bar to jump"
 
+[node name="Label2" type="Label" parent="." unique_id=1563980589]
+z_index = -1
+offset_left = 16.0
+offset_top = -862.0
+offset_right = 745.0
+offset_bottom = -625.0
+mouse_filter = 1
+theme_override_font_sizes/font_size = 32
+text = "Oh, you already know how to use the harpoon?
+Then try beating my times on the levels:
+1)
+2)
+3)"
+
 [node name="WorldBoundary" parent="." unique_id=1163350442 instance=ExtResource("3_rus8k")]
 position = Vector2(5694, 1212)

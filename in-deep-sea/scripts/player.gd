@@ -6,6 +6,8 @@ class_name Player
 
 @onready var gun_pivot: Node2D = $"CleitinhoInDeepSea/Gun Pivot"
 @onready var gun_sprite: Sprite2D = $"CleitinhoInDeepSea/Gun Pivot/Gun"
+const GUN_TEXTURE_IDLE = preload("uid://b6q8s4d83y60n")
+const GUN_TEXTURE_HOOKED = preload("uid://cjrt2m7tj0nxr")
 
 @onready var harpoon: Sprite2D = $Harpoon
 
@@ -18,8 +20,8 @@ class_name Player
 
 # Horizontal feel
 @export var ground_accel := 3200.0
-@export var ground_friction := 3500.0
-@export var ground_brake := 2500.0
+@export var ground_friction := 4750.0
+@export var ground_brake := 6500.0
 @export var air_accel := 1400.0
 @export var air_friction := 200.0
 @export var air_brake := 2000.0
@@ -30,7 +32,7 @@ class_name Player
 @export var jump_release_duration := 0.15
 
 # Coyote & buffer
-@export var coyote_time := 0.1
+@export var coyote_time := 0.125
 @export var jump_buffer_time := 0.1
 
 # ============================================================
@@ -41,6 +43,8 @@ class_name Player
 @export var dash_push_factor := 0.8
 @export var dash_falloff_speed := 1500.0
 @onready var dash_cooldown: Timer = $"Dash Cooldown"
+@export var dash_cooldown_ground := 0.35
+@export var dash_cooldown_air := 1.0
 
 # ============================================================
 #  GRAPPLE / SWING
@@ -58,6 +62,9 @@ class_name Player
 @export var swing_max_speed := 4000.0
 @export var wall_drag_rate := 5.0
 @export var swing_air_drag := 0.015   # Higher = swing loses speed faster
+
+@export var dash_rope_stiffness_scale := 3.0   # Multiplies spring_stiffness during a dash
+@export var dash_rope_damping_scale := 3.0     # Multiplies spring_damping during a dash
 
 var grapple_target: Node2D = null        # The body the hook stuck to
 var grapple_local_offset := Vector2.ZERO # Hit point in the body's local space
@@ -88,6 +95,10 @@ var is_grappling := false
 var grapple_anchor := Vector2.ZERO
 var rope_length := 0.0
 
+var was_on_floor := false
+
+var can_cut_jump := false
+
 # Used to draw the rope at the same interpolated position as the player
 var prev_pos := Vector2.ZERO
 var curr_pos := Vector2.ZERO
@@ -108,6 +119,7 @@ func _ready() -> void:
 	prev_pos = global_position
 	curr_pos = global_position
 	
+	gun_sprite.texture = GUN_TEXTURE_IDLE
 	harpoon.top_level = true
 	harpoon.physics_interpolation_mode = Node.PHYSICS_INTERPOLATION_MODE_OFF
 	harpoon.hide()
@@ -143,6 +155,14 @@ func _physics_process(delta: float) -> void:
 		_update_walking_movement(delta)
 
 	move_and_slide()
+
+	# Reset the dash on the tick the player lands
+	var landed := is_on_floor() and not was_on_floor
+	was_on_floor = is_on_floor()
+	if landed and not can_dash:
+		dash_cooldown.stop()
+		can_dash = true
+
 	_handle_collisions()
 	_update_camera(delta)
 
@@ -155,7 +175,7 @@ func _physics_process(delta: float) -> void:
 
 func _update_walking_movement(delta: float) -> void:
 	# --- Coyote & buffer timers ---
-	if is_on_floor():
+	if is_on_floor() and velocity.y >= 0.0:
 		coyote_timer = coyote_time
 	else:
 		coyote_timer -= delta
@@ -176,10 +196,14 @@ func _update_walking_movement(delta: float) -> void:
 			release_timer -= delta
 		velocity.y += g * delta
 
-	# Detect release
-	if jump_was_pressed and not Input.is_action_pressed("jump") and velocity.y < 0:
+		# Detect release
+	if can_cut_jump and jump_was_pressed and not Input.is_action_pressed("jump") and velocity.y < 0:
 		release_timer = jump_release_duration
 	jump_was_pressed = Input.is_action_pressed("jump")
+
+	# Jump can no longer be cut once the player starts falling
+	if velocity.y >= 0.0:
+		can_cut_jump = false
 
 	# --- Dash ---
 	_try_dash()
@@ -192,8 +216,9 @@ func _update_walking_movement(delta: float) -> void:
 		var current_speed := absf(velocity.x)
 
 		if direction != 0.0 and signf(direction) != signf(velocity.x) and velocity.x != 0.0:
+			# Reversing: brake hard and carry straight through into the new direction
 			var rate = ground_brake if is_on_floor() else air_brake
-			velocity.x = move_toward(velocity.x, 0.0, rate * delta)
+			velocity.x = move_toward(velocity.x, direction * speed, rate * delta)
 		elif direction != 0.0 and current_speed > speed:
 			# Above max, same direction → slowly decay back to max walking speed
 			var coast_rate = ground_friction if is_on_floor() else swing_coast_friction
@@ -217,8 +242,14 @@ func _update_walking_movement(delta: float) -> void:
 		velocity.y = -jump_speed
 		release_timer = 0.0
 		jump_was_pressed = true
+		can_cut_jump = true
 		coyote_timer = 0.0
 		jump_buffer_timer = 0.0
+		
+		# Reset the dash on the frame the jump happens
+		if not can_dash:
+			dash_cooldown.stop()
+			can_dash = true
 
 # ============================================================
 #  GRAPPLE / SWING SYSTEM (hooked)
@@ -240,6 +271,17 @@ func _update_grapple_movement(delta: float) -> void:
 
 	if dash_timer > 0.0:
 		dash_timer -= delta
+
+		# Stiffer rope while dashing: less stretch, less elastic
+		var dash_to_anchor := grapple_anchor - global_position
+		var dash_dist := dash_to_anchor.length()
+		var dash_stretch := dash_dist - rope_length
+		if dash_stretch > 0.0 and dash_dist > 0.001:
+			var dash_rope_dir := dash_to_anchor / dash_dist
+			velocity += dash_rope_dir * dash_stretch * spring_stiffness * dash_rope_stiffness_scale * delta
+			var dash_radial := velocity.dot(-dash_rope_dir)
+			if dash_radial > 0.0:
+				velocity += dash_rope_dir * dash_radial * spring_damping * dash_rope_damping_scale * delta
 		return
 
 	# --- Gravity while swinging ---
@@ -301,10 +343,10 @@ func _update_grapple_movement(delta: float) -> void:
 func _try_dash() -> void:
 	if Input.is_action_just_pressed("dash") and dash_timer <= 0.0 and can_dash:
 		can_dash = false
-		dash_cooldown.start()
-		var dir := Input.get_vector("move_left", "move_right", "up", "down")
+		dash_cooldown.start(dash_cooldown_ground if is_on_floor() else dash_cooldown_air)
+		var dir := Vector2(Input.get_axis("move_left", "move_right"), 0.0)
 		if dir == Vector2.ZERO:
-			dir = Vector2.RIGHT
+			dir = Vector2.LEFT if cleitinho_in_deep_sea.flip_h else Vector2.RIGHT
 		dash_direction = dir
 		dash_timer = dash_duration
 		_perform_dash()
@@ -333,6 +375,10 @@ func _try_grapple() -> void:
 	ray.force_raycast_update()
 
 	if ray.is_colliding():
+		# Face the direction the harpoon was shot
+		if absf(aim_dir.x) > 0.01:
+			cleitinho_in_deep_sea.flip_h = aim_dir.x < 0.0
+
 		is_grappling = true
 		grapple_anchor = ray.get_collision_point()
 
@@ -345,6 +391,7 @@ func _try_grapple() -> void:
 		rope_length = minf(rope_length, rope_max_length)
 		dash_timer = 0.0
 		rope.show()
+		gun_sprite.texture = GUN_TEXTURE_HOOKED
 		harpoon.global_position = grapple_anchor
 		harpoon.global_rotation = (grapple_anchor - global_position).angle()
 		harpoon.show()
@@ -354,6 +401,7 @@ func _release_grapple() -> void:
 	rope_length = 0.0
 	grapple_target = null
 	rope.hide()
+	gun_sprite.texture = GUN_TEXTURE_IDLE
 	harpoon.hide()
 
 func _handle_collisions() -> void:
@@ -385,24 +433,37 @@ func _update_gun_aim(draw_pos: Vector2) -> void:
 	if aim.length() < 1.0:
 		return
 
+	var move_input := Input.get_axis("move_left", "move_right")
 	var angle := aim.angle()
 
 	# While walking (not hooked), the gun can't point backwards
 	if not is_grappling:
-		var move_input := Input.get_axis("move_left", "move_right")
 		if move_input > 0.0:
 			angle = clampf(angle, -PI / 2.0, PI / 2.0)
 		elif move_input < 0.0:
-			# Mirror the angle, clamp it like the right side, then mirror back
 			var mirrored := wrapf(PI - angle, -PI, PI)
 			mirrored = clampf(mirrored, -PI / 2.0, PI / 2.0)
 			angle = PI - mirrored
 
 	gun_pivot.global_rotation = angle
-	gun_sprite.flip_v = cos(angle) < 0.0   # keep the gun upright when pointing left
+	gun_sprite.flip_v = cos(angle) < 0.0
+
+	# --- Character facing ---
+	# --- Character facing ---
+	if move_input != 0.0:
+		if not is_grappling:
+			# Walking: face the input direction
+			cleitinho_in_deep_sea.flip_h = move_input < 0.0
+	elif not is_grappling:
+		# No input, unhooked (ground or air): face the same way the gun points
+		cleitinho_in_deep_sea.flip_h = cos(angle) < 0.0
 
 func _on_dash_cooldown_timeout() -> void:
 	can_dash = true
 
 func step_on_trampoline(jump_force: float) -> void:
 	velocity.y = -jump_force
+	can_cut_jump = false
+	release_timer = 0.0
+	coyote_timer = 0.0
+	jump_buffer_timer = 0.0
