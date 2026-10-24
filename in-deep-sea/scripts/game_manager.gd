@@ -11,7 +11,7 @@ func _ready() -> void:
 	GlobalSignals.restart_level_signal.connect(restart_level)
 	GlobalSignals.go_to_next_level_reached.connect(change_current_level)
 	
-	change_current_level(LEVEL_3)
+	change_current_level(LEVEL_1)
 
 func _process(_delta: float) -> void:
 	pass

@@ -48,7 +48,7 @@ class_name Player
 @onready var ray: RayCast2D = $RayCast2D
 @onready var rope: Line2D = $Line2D
 
-@export var rope_max_length := 1000.0
+@export var rope_max_length := 1250.0
 @export var rope_min_length := 20.0       # Shortest the rope can get
 @export var reel_speed := 400.0   # Pixels per second when holding W/S
 @export var spring_stiffness := 150.0
