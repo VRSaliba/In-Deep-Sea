@@ -2,6 +2,12 @@ extends CharacterBody2D
 class_name Player
 
 @onready var camera: Camera2D = $Camera2D
+@onready var cleitinho_in_deep_sea: Sprite2D = $CleitinhoInDeepSea
+
+@onready var gun_pivot: Node2D = $"CleitinhoInDeepSea/Gun Pivot"
+@onready var gun_sprite: Sprite2D = $"CleitinhoInDeepSea/Gun Pivot/Gun"
+
+@onready var harpoon: Sprite2D = $Harpoon
 
 # ============================================================
 #  MOVEMENT
@@ -101,6 +107,10 @@ func _ready() -> void:
 
 	prev_pos = global_position
 	curr_pos = global_position
+	
+	harpoon.top_level = true
+	harpoon.physics_interpolation_mode = Node.PHYSICS_INTERPOLATION_MODE_OFF
+	harpoon.hide()
 
 func die() -> void:
 	_release_grapple()
@@ -113,10 +123,15 @@ func die() -> void:
 	GlobalSignals.restart_level_signal.emit()
 
 func _process(_delta: float) -> void:
+	var t := Engine.get_physics_interpolation_fraction()
+	var draw_pos := prev_pos.lerp(curr_pos, t)
+
 	if is_grappling:
-		var t := Engine.get_physics_interpolation_fraction()
-		rope.set_point_position(0, prev_pos.lerp(curr_pos, t))
+		rope.set_point_position(0, draw_pos)
 		rope.set_point_position(1, grapple_anchor)
+		harpoon.global_position = grapple_anchor
+
+	_update_gun_aim(draw_pos)
 
 func _physics_process(delta: float) -> void:
 	_handle_grapple_input()
@@ -147,6 +162,11 @@ func _update_walking_movement(delta: float) -> void:
 
 	if jump_buffer_timer > 0.0:
 		jump_buffer_timer -= delta
+	
+	# --- Face the input direction ---
+	var facing_input := Input.get_axis("move_left", "move_right")
+	if facing_input != 0.0:
+		cleitinho_in_deep_sea.flip_h = facing_input < 0.0
 
 	# --- Gravity ---
 	if not is_on_floor():
@@ -325,12 +345,16 @@ func _try_grapple() -> void:
 		rope_length = minf(rope_length, rope_max_length)
 		dash_timer = 0.0
 		rope.show()
+		harpoon.global_position = grapple_anchor
+		harpoon.global_rotation = (grapple_anchor - global_position).angle()
+		harpoon.show()
 
 func _release_grapple() -> void:
 	is_grappling = false
 	rope_length = 0.0
 	grapple_target = null
 	rope.hide()
+	harpoon.hide()
 
 func _handle_collisions() -> void:
 	for i in get_slide_collision_count():
@@ -353,6 +377,29 @@ func _update_camera(delta: float) -> void:
 		target_offset = (grapple_anchor - global_position) * grapple_pan_factor
 
 	camera.offset = camera.offset.lerp(target_offset, 1.0 - exp(-pan_smooth * delta))
+
+func _update_gun_aim(draw_pos: Vector2) -> void:
+	var origin := draw_pos + (gun_pivot.global_position - global_position)
+	var target := grapple_anchor if is_grappling else get_global_mouse_position()
+	var aim := target - origin
+	if aim.length() < 1.0:
+		return
+
+	var angle := aim.angle()
+
+	# While walking (not hooked), the gun can't point backwards
+	if not is_grappling:
+		var move_input := Input.get_axis("move_left", "move_right")
+		if move_input > 0.0:
+			angle = clampf(angle, -PI / 2.0, PI / 2.0)
+		elif move_input < 0.0:
+			# Mirror the angle, clamp it like the right side, then mirror back
+			var mirrored := wrapf(PI - angle, -PI, PI)
+			mirrored = clampf(mirrored, -PI / 2.0, PI / 2.0)
+			angle = PI - mirrored
+
+	gun_pivot.global_rotation = angle
+	gun_sprite.flip_v = cos(angle) < 0.0   # keep the gun upright when pointing left
 
 func _on_dash_cooldown_timeout() -> void:
 	can_dash = true
