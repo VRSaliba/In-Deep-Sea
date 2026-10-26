@@ -1,7 +1,7 @@
 [gd_scene format=4 uid="uid://bpu33gbmbr212"]
 
 [ext_resource type="Script" uid="uid://6n2w7ty6qbub" path="res://scripts/moving_platform.gd" id="1_1tdcd"]
-[ext_resource type="TileSet" uid="uid://dqooc814o4qav" path="res://resources/placeholder_tileset.tres" id="1_ms375"]
+[ext_resource type="TileSet" uid="uid://dqooc814o4qav" path="res://resources/art stuff/placeholder_tileset.tres" id="1_ms375"]
 
 [node name="Moving Platform" type="AnimatableBody2D" unique_id=1446177362]
 scale = Vector2(1.5, 1.5)

@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://ku4kt6dr4tfq"]
+
+[ext_resource type="PackedScene" uid="uid://dldvgetyrngc3" path="res://scenes/player.tscn" id="1_x4gu4"]
+
+[node name="Level 5" type="Node2D" unique_id=174246873]
+
+[node name="Player" parent="." unique_id=1396639506 instance=ExtResource("1_x4gu4")]
+position = Vector2(58, 260)
+
+[node name="Label" type="Label" parent="." unique_id=2142577777]
+z_index = -1
+offset_left = 168.0
+offset_top = 99.0
+offset_right = 1043.0
+offset_bottom = 280.0
+mouse_filter = 1
+theme_override_font_sizes/font_size = 32
+text = "Why are platform levels almost
+ always from left to right?"

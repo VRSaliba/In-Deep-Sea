@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://da0iw28yeojgd"]
 
 [ext_resource type="Script" uid="uid://cf02qjy7y4foj" path="res://scripts/ourico_do_mar.gd" id="1_q64d5"]
-[ext_resource type="Texture2D" uid="uid://ynsi1avrsegu" path="res://resources/ourico_do_mar.png" id="1_yk6yy"]
+[ext_resource type="Texture2D" uid="uid://ynsi1avrsegu" path="res://resources/art stuff/ourico_do_mar.png" id="1_yk6yy"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_x07em"]
 radius = 169.99998

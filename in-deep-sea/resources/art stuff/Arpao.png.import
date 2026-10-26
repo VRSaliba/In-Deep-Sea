@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://btajw8t0ueao2"
-path="res://.godot/imported/Arpao.png-875b241e8b634142c861b0637637e0aa.ctex"
+path="res://.godot/imported/Arpao.png-34d54d597acc56f5848b362e5c1ada4b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/Arpao.png"
-dest_files=["res://.godot/imported/Arpao.png-875b241e8b634142c861b0637637e0aa.ctex"]
+source_file="res://resources/art stuff/Arpao.png"
+dest_files=["res://.godot/imported/Arpao.png-34d54d597acc56f5848b362e5c1ada4b.ctex"]
 
 [params]
 

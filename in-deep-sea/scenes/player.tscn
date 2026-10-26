@@ -1,9 +1,8 @@
 [gd_scene format=3 uid="uid://dldvgetyrngc3"]
 
 [ext_resource type="Script" uid="uid://brb8rjyfb10rn" path="res://scripts/player.gd" id="1_g2els"]
-[ext_resource type="Texture2D" uid="uid://brw7q2x1oh3an" path="res://resources/Cleitinho_In_Deep_Sea.PNG" id="2_g2els"]
-[ext_resource type="Texture2D" uid="uid://b6q8s4d83y60n" path="res://resources/Arma-arpão-1.png" id="3_dqkch"]
-[ext_resource type="Texture2D" uid="uid://btajw8t0ueao2" path="res://resources/Arpao.png" id="4_qlg0r"]
+[ext_resource type="SpineSkeletonDataResource" uid="uid://d00winglsxxc3" path="res://resources/player_spine_skeleton_data_resource.tres" id="2_dqkch"]
+[ext_resource type="Texture2D" uid="uid://btajw8t0ueao2" path="res://resources/art stuff/Arpao.png" id="4_qlg0r"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wom6i"]
 size = Vector2(47, 179)
@@ -25,23 +24,48 @@ target_position = Vector2(300, 0)
 
 [node name="Line2D" type="Line2D" parent="." unique_id=538459976]
 
-[node name="CleitinhoInDeepSea" type="Sprite2D" parent="." unique_id=721804209]
-position = Vector2(-1.9999695, -8)
+[node name="CleitinhoInDeepSea" type="SpineSprite" parent="." unique_id=875455016]
+skeleton_data_res = ExtResource("2_dqkch")
+preview_skin = "Default"
+preview_animation = "-- Empty --"
+preview_frame = false
+preview_time = 0.0
+position = Vector2(0, 85)
 scale = Vector2(0.1, 0.1)
-texture = ExtResource("2_g2els")
-
-[node name="Gun Pivot" type="Node2D" parent="CleitinhoInDeepSea" unique_id=1155292838]
-position = Vector2(0, -230)
-
-[node name="Gun" type="Sprite2D" parent="CleitinhoInDeepSea/Gun Pivot" unique_id=563764711]
-position = Vector2(928, -8)
-scale = Vector2(0.7, 0.7)
-texture = ExtResource("3_dqkch")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=649698288]
 zoom = Vector2(0.3, 0.3)
 position_smoothing_enabled = true
 position_smoothing_speed = 8.0
+
+[node name="CanvasLayer" type="CanvasLayer" parent="Camera2D" unique_id=400826677]
+
+[node name="MarginContainer" type="MarginContainer" parent="Camera2D/CanvasLayer" unique_id=538971363]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Camera2D/CanvasLayer/MarginContainer" unique_id=1197428849]
+layout_mode = 2
+alignment = 1
+
+[node name="Label" type="Label" parent="Camera2D/CanvasLayer/MarginContainer/VBoxContainer" unique_id=1163452916]
+layout_mode = 2
+horizontal_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Camera2D/CanvasLayer/MarginContainer/VBoxContainer" unique_id=1338109462]
+layout_mode = 2
+alignment = 1
+
+[node name="Restart Button" type="Button" parent="Camera2D/CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer" unique_id=223972215]
+layout_mode = 2
+text = "Restart"
+
+[node name="Continue Button" type="Button" parent="Camera2D/CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer" unique_id=1947674047]
+layout_mode = 2
+text = "Go to next"
 
 [node name="Harpoon" type="Sprite2D" parent="." unique_id=1057439416]
 visible = false
@@ -50,3 +74,5 @@ scale = Vector2(0.07, 0.07)
 texture = ExtResource("4_qlg0r")
 
 [connection signal="timeout" from="Dash Cooldown" to="." method="_on_dash_cooldown_timeout"]
+[connection signal="pressed" from="Camera2D/CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer/Restart Button" to="." method="_on_restart_button_pressed"]
+[connection signal="pressed" from="Camera2D/CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer/Continue Button" to="." method="_on_continue_button_pressed"]

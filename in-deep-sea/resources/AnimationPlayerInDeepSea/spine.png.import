@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cjrt2m7tj0nxr"
-path="res://.godot/imported/Arma.png-130a91e97d22ba01c4ec9cc24d1bcb70.ctex"
+uid="uid://b24hp5axsdaea"
+path="res://.godot/imported/spine.png-f27dc831d2ee8a1a3afceb74a65b2b12.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/Arma.png"
-dest_files=["res://.godot/imported/Arma.png-130a91e97d22ba01c4ec9cc24d1bcb70.ctex"]
+source_file="res://resources/AnimationPlayerInDeepSea/spine.png"
+dest_files=["res://.godot/imported/spine.png-f27dc831d2ee8a1a3afceb74a65b2b12.ctex"]
 
 [params]
 

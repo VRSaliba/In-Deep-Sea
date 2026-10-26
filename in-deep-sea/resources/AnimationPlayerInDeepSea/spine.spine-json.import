@@ -1,0 +1,14 @@
+[remap]
+
+importer="spine.json"
+type="SpineSkeletonFileResource"
+uid="uid://doh0cryiacij4"
+path="res://.godot/imported/spine.spine-json-b7e038f21deb60874d4846f0918ba5f6.spjson"
+
+[deps]
+
+source_file="res://resources/AnimationPlayerInDeepSea/spine.spine-json"
+dest_files=["res://.godot/imported/spine.spine-json-b7e038f21deb60874d4846f0918ba5f6.spjson"]
+
+[params]
+

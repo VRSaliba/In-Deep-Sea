@@ -2,12 +2,15 @@ extends CharacterBody2D
 class_name Player
 
 @onready var camera: Camera2D = $Camera2D
-@onready var cleitinho_in_deep_sea: Sprite2D = $CleitinhoInDeepSea
 
-@onready var gun_pivot: Node2D = $"CleitinhoInDeepSea/Gun Pivot"
-@onready var gun_sprite: Sprite2D = $"CleitinhoInDeepSea/Gun Pivot/Gun"
-const GUN_TEXTURE_IDLE = preload("uid://b6q8s4d83y60n")
-const GUN_TEXTURE_HOOKED = preload("uid://cjrt2m7tj0nxr")
+@onready var end_level_ui: CanvasLayer = $Camera2D/CanvasLayer
+@onready var label: Label = $Camera2D/CanvasLayer/MarginContainer/VBoxContainer/Label
+
+var level_completed: bool = false
+var level_time: float = 0
+
+# Spine character. Adjust the path to match your scene tree.
+@onready var spine: SpineSprite = $CleitinhoInDeepSea
 
 @onready var harpoon: Sprite2D = $Harpoon
 
@@ -54,7 +57,7 @@ const GUN_TEXTURE_HOOKED = preload("uid://cjrt2m7tj0nxr")
 
 @export var rope_max_length := 1250.0
 @export var rope_min_length := 20.0       # Shortest the rope can get
-@export var reel_speed := 400.0   # Pixels per second when holding W/S
+@export var reel_speed := 400.0   # Pixels per second when holding the reel keys
 @export var spring_stiffness := 150.0
 @export var spring_damping := 12
 @export var swing_gravity_scale := 1.5
@@ -78,6 +81,22 @@ var grapple_local_offset := Vector2.ZERO # Hit point in the body's local space
 @export var zoom_smooth := 3.5
 @export var grapple_pan_factor := 0.5   # How much the camera leans toward the hook
 @export var pan_smooth := 8.0           # How fast the pan eases in/out
+
+# ============================================================
+#  ANIMATION
+# ============================================================
+# Track 0 = body (idle / run / air / dash), track 1 = harpoon arm
+const TRACK_BODY := 0
+const TRACK_HARPOON := 1
+const ANIM_MIX := 0.15   # Seconds used to blend between animations
+const HOOK_MIX := 0.05           # Fast blend when the hook is fired
+const HARPOON_OUT_TIME := 0.5    # Length of the out_arpao animation, in seconds
+
+enum AnimState { NONE, IDLE, RUN, AIR, DASH, HOOKED }
+var anim_state := AnimState.NONE
+var harpoon_anim_active := false
+var hook_release_timer := 0.0
+var base_scale := Vector2.ONE   # Skeleton scale without the left/right flip
 
 # ============================================================
 #  STATE
@@ -104,8 +123,11 @@ var prev_pos := Vector2.ZERO
 var curr_pos := Vector2.ZERO
 
 func _ready() -> void:
+	end_level_ui.hide()
+	
 	GlobalSignals.player_died.connect(die)
 	GlobalSignals.trampoline_collided.connect(step_on_trampoline)
+	GlobalSignals.go_to_next_level_reached.connect(collided_with_next_level_portal)
 
 	camera.make_current()
 	ray.enabled = true
@@ -118,11 +140,12 @@ func _ready() -> void:
 
 	prev_pos = global_position
 	curr_pos = global_position
-	
-	gun_sprite.texture = GUN_TEXTURE_IDLE
+
 	harpoon.top_level = true
 	harpoon.physics_interpolation_mode = Node.PHYSICS_INTERPOLATION_MODE_OFF
 	harpoon.hide()
+
+	base_scale = Vector2(absf(spine.scale.x), spine.scale.y)
 
 func die() -> void:
 	_release_grapple()
@@ -134,7 +157,10 @@ func die() -> void:
 	# Player death animation
 	GlobalSignals.restart_level_signal.emit()
 
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
+	if !level_completed:
+		level_time += delta
+	
 	var t := Engine.get_physics_interpolation_fraction()
 	var draw_pos := prev_pos.lerp(curr_pos, t)
 
@@ -143,7 +169,7 @@ func _process(_delta: float) -> void:
 		rope.set_point_position(1, grapple_anchor)
 		harpoon.global_position = grapple_anchor
 
-	_update_gun_aim(draw_pos)
+	_update_facing()
 
 func _physics_process(delta: float) -> void:
 	_handle_grapple_input()
@@ -165,9 +191,92 @@ func _physics_process(delta: float) -> void:
 
 	_handle_collisions()
 	_update_camera(delta)
+	_update_animation(delta)
 
 	prev_pos = curr_pos
 	curr_pos = global_position
+
+# ============================================================
+#  FACING (Spine has no flip_h, so we flip the node's scale)
+# ============================================================
+
+func _face_left(left: bool) -> void:
+	spine.scale.x = -base_scale.x if left else base_scale.x
+
+func _is_facing_left() -> bool:
+	return spine.scale.x < 0.0
+
+func _update_facing() -> void:
+	# While hooked, the facing stays as it was when the harpoon was shot
+	if is_grappling:
+		return
+
+	# Only change direction when there is movement input,
+	# otherwise keep the last facing
+	var move_input := Input.get_axis("move_left", "move_right")
+	if move_input != 0.0:
+		_face_left(move_input < 0.0)
+
+# ============================================================
+#  ANIMATION
+# ============================================================
+
+func _update_animation(delta: float) -> void:
+	var state := spine.get_animation_state()
+	if state == null:
+		return
+
+	if hook_release_timer > 0.0:
+		hook_release_timer -= delta
+
+	# --- Track 1: harpoon arm ---
+	if is_grappling and not harpoon_anim_active:
+		harpoon_anim_active = true
+		hook_release_timer = 0.0
+		state.set_animation("in_arpao", false, TRACK_HARPOON)
+		state.add_animation("loop_arpao", 0.0, true, TRACK_HARPOON)
+	elif not is_grappling and harpoon_anim_active:
+		harpoon_anim_active = false
+		hook_release_timer = HARPOON_OUT_TIME
+		state.set_animation("out_arpao", false, TRACK_HARPOON)
+		state.add_empty_animation(TRACK_HARPOON, ANIM_MIX, 0.0)
+
+	# --- Track 0: body ---
+	var desired := AnimState.IDLE
+	if is_grappling or hook_release_timer > 0.0:
+		# run / jump / dash switch the arm-aiming constraints off, so while the
+		# harpoon arm is in use the body track stays in the setup pose
+		desired = AnimState.HOOKED
+	elif dash_timer > 0.0:
+		desired = AnimState.DASH
+	elif not is_on_floor():
+		desired = AnimState.AIR
+	elif Input.get_axis("move_left", "move_right") != 0.0:
+		desired = AnimState.RUN
+
+	if desired == anim_state:
+		return
+
+	var previous := anim_state
+	anim_state = desired
+
+	match desired:
+		AnimState.HOOKED:
+			state.set_empty_animation(TRACK_BODY, HOOK_MIX)
+		AnimState.IDLE:
+			if previous == AnimState.RUN:
+				# Play the stop animation, then blend back to the setup pose
+				state.set_animation("out_run", false, TRACK_BODY)
+				state.add_empty_animation(TRACK_BODY, ANIM_MIX, 0.0)
+			else:
+				state.set_empty_animation(TRACK_BODY, ANIM_MIX)
+		AnimState.RUN:
+			state.set_animation("in_run", false, TRACK_BODY)
+			state.add_animation("loop_run", 0.0, true, TRACK_BODY)
+		AnimState.AIR:
+			state.set_animation("jump", false, TRACK_BODY)
+		AnimState.DASH:
+			state.set_animation("dash", false, TRACK_BODY)
 
 # ============================================================
 #  WALKING SYSTEM (unhooked)
@@ -182,11 +291,6 @@ func _update_walking_movement(delta: float) -> void:
 
 	if jump_buffer_timer > 0.0:
 		jump_buffer_timer -= delta
-	
-	# --- Face the input direction ---
-	var facing_input := Input.get_axis("move_left", "move_right")
-	if facing_input != 0.0:
-		cleitinho_in_deep_sea.flip_h = facing_input < 0.0
 
 	# --- Gravity ---
 	if not is_on_floor():
@@ -196,7 +300,7 @@ func _update_walking_movement(delta: float) -> void:
 			release_timer -= delta
 		velocity.y += g * delta
 
-		# Detect release
+	# Detect release
 	if can_cut_jump and jump_was_pressed and not Input.is_action_pressed("jump") and velocity.y < 0:
 		release_timer = jump_release_duration
 	jump_was_pressed = Input.is_action_pressed("jump")
@@ -245,7 +349,7 @@ func _update_walking_movement(delta: float) -> void:
 		can_cut_jump = true
 		coyote_timer = 0.0
 		jump_buffer_timer = 0.0
-		
+
 		# Reset the dash on the frame the jump happens
 		if not can_dash:
 			dash_cooldown.stop()
@@ -346,7 +450,7 @@ func _try_dash() -> void:
 		dash_cooldown.start(dash_cooldown_ground if is_on_floor() else dash_cooldown_air)
 		var dir := Vector2(Input.get_axis("move_left", "move_right"), 0.0)
 		if dir == Vector2.ZERO:
-			dir = Vector2.LEFT if cleitinho_in_deep_sea.flip_h else Vector2.RIGHT
+			dir = Vector2.LEFT if _is_facing_left() else Vector2.RIGHT
 		dash_direction = dir
 		dash_timer = dash_duration
 		_perform_dash()
@@ -377,7 +481,7 @@ func _try_grapple() -> void:
 	if ray.is_colliding():
 		# Face the direction the harpoon was shot
 		if absf(aim_dir.x) > 0.01:
-			cleitinho_in_deep_sea.flip_h = aim_dir.x < 0.0
+			_face_left(aim_dir.x < 0.0)
 
 		is_grappling = true
 		grapple_anchor = ray.get_collision_point()
@@ -391,7 +495,6 @@ func _try_grapple() -> void:
 		rope_length = minf(rope_length, rope_max_length)
 		dash_timer = 0.0
 		rope.show()
-		gun_sprite.texture = GUN_TEXTURE_HOOKED
 		harpoon.global_position = grapple_anchor
 		harpoon.global_rotation = (grapple_anchor - global_position).angle()
 		harpoon.show()
@@ -401,7 +504,6 @@ func _release_grapple() -> void:
 	rope_length = 0.0
 	grapple_target = null
 	rope.hide()
-	gun_sprite.texture = GUN_TEXTURE_IDLE
 	harpoon.hide()
 
 func _handle_collisions() -> void:
@@ -426,38 +528,6 @@ func _update_camera(delta: float) -> void:
 
 	camera.offset = camera.offset.lerp(target_offset, 1.0 - exp(-pan_smooth * delta))
 
-func _update_gun_aim(draw_pos: Vector2) -> void:
-	var origin := draw_pos + (gun_pivot.global_position - global_position)
-	var target := grapple_anchor if is_grappling else get_global_mouse_position()
-	var aim := target - origin
-	if aim.length() < 1.0:
-		return
-
-	var move_input := Input.get_axis("move_left", "move_right")
-	var angle := aim.angle()
-
-	# While walking (not hooked), the gun can't point backwards
-	if not is_grappling:
-		if move_input > 0.0:
-			angle = clampf(angle, -PI / 2.0, PI / 2.0)
-		elif move_input < 0.0:
-			var mirrored := wrapf(PI - angle, -PI, PI)
-			mirrored = clampf(mirrored, -PI / 2.0, PI / 2.0)
-			angle = PI - mirrored
-
-	gun_pivot.global_rotation = angle
-	gun_sprite.flip_v = cos(angle) < 0.0
-
-	# --- Character facing ---
-	# --- Character facing ---
-	if move_input != 0.0:
-		if not is_grappling:
-			# Walking: face the input direction
-			cleitinho_in_deep_sea.flip_h = move_input < 0.0
-	elif not is_grappling:
-		# No input, unhooked (ground or air): face the same way the gun points
-		cleitinho_in_deep_sea.flip_h = cos(angle) < 0.0
-
 func _on_dash_cooldown_timeout() -> void:
 	can_dash = true
 
@@ -467,3 +537,24 @@ func step_on_trampoline(jump_force: float) -> void:
 	release_timer = 0.0
 	coyote_timer = 0.0
 	jump_buffer_timer = 0.0
+
+func collided_with_next_level_portal(_next_level_reference: String) -> void:
+	level_completed = true
+	velocity = Vector2.ZERO
+	set_physics_process(false)
+	spine.hide()
+	harpoon.hide()
+	rope.hide()
+
+	var m = int(level_time) / 60
+	var s = int(level_time) % 60
+	var ms = int(level_time * 1000) % 1000
+	label.text = "Time spent on this level: " + "%02d:%02d.%03d" % [m, s, ms]
+	end_level_ui.show()
+	
+
+func _on_restart_button_pressed() -> void:
+	GlobalSignals.restart_level_signal.emit()
+
+func _on_continue_button_pressed() -> void:
+	GlobalSignals.go_to_next_level_button_pressed.emit()

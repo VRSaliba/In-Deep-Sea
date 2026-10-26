@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://b6q8s4d83y60n"
-path="res://.godot/imported/Arma-arpão-1.png-3e67e103c81d75c577ab9c40526f3e40.ctex"
+path="res://.godot/imported/Arma-arpão-1.png-f611ddf9b231aa09f34b33c3bc3bb5ac.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/Arma-arpão-1.png"
-dest_files=["res://.godot/imported/Arma-arpão-1.png-3e67e103c81d75c577ab9c40526f3e40.ctex"]
+source_file="res://resources/art stuff/Arma-arpão-1.png"
+dest_files=["res://.godot/imported/Arma-arpão-1.png-f611ddf9b231aa09f34b33c3bc3bb5ac.ctex"]
 
 [params]
 

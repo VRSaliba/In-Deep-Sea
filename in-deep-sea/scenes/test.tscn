@@ -1,0 +1,14 @@
+[gd_scene format=3 uid="uid://4pcqpqkx10p1"]
+
+[ext_resource type="SpineSkeletonDataResource" uid="uid://d00winglsxxc3" path="res://resources/player_spine_skeleton_data_resource.tres" id="1_bl13t"]
+[ext_resource type="Script" uid="uid://bownn3dkm8ta5" path="res://scripts/test.gd" id="2_iyx0m"]
+
+[node name="SpineSprite" type="SpineSprite" unique_id=1698734544]
+skeleton_data_res = ExtResource("1_bl13t")
+preview_skin = "Default"
+preview_animation = "-- Empty --"
+preview_frame = false
+preview_time = 0.0
+position = Vector2(589.99994, 331.99997)
+scale = Vector2(0.1, 0.1)
+script = ExtResource("2_iyx0m")

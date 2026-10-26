@@ -1,8 +1,8 @@
 [gd_scene format=4 uid="uid://1w83hqlrkygx"]
 
 [ext_resource type="PackedScene" uid="uid://dldvgetyrngc3" path="res://scenes/player.tscn" id="1_3bmlt"]
-[ext_resource type="Script" uid="uid://diat1rd6nl57a" path="res://scripts/base_level.gd" id="1_b4j7a"]
-[ext_resource type="Texture2D" uid="uid://culstkn02qsko" path="res://resources/world_tileset.png" id="1_jm1iu"]
+[ext_resource type="Texture2D" uid="uid://culstkn02qsko" path="res://resources/art stuff/world_tileset.png" id="1_jm1iu"]
+[ext_resource type="Script" uid="uid://hwwksds3lqff" path="res://scripts/level_2.gd" id="1_y0kc7"]
 [ext_resource type="PackedScene" uid="uid://bpu33gbmbr212" path="res://scenes/moving_platform.tscn" id="5_b4j7a"]
 [ext_resource type="PackedScene" uid="uid://g7err3hw88kq" path="res://scenes/level_3.tscn" id="5_wo48x"]
 [ext_resource type="PackedScene" uid="uid://dr2njxtavrur4" path="res://scenes/next_level_collision.tscn" id="6_wo48x"]
@@ -144,7 +144,7 @@ physics_layer_0/collision_layer = 1
 sources/0 = SubResource("TileSetAtlasSource_y0kc7")
 
 [node name="Level 2" type="Node2D" unique_id=1504798460]
-script = ExtResource("1_b4j7a")
+script = ExtResource("1_y0kc7")
 
 [node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=984478495]
 position = Vector2(2, 0)

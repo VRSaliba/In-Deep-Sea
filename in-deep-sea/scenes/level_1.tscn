@@ -1,11 +1,10 @@
 [gd_scene format=4 uid="uid://esv4e8s4h3q6"]
 
 [ext_resource type="Script" uid="uid://cct1kajx10df0" path="res://scripts/level_1.gd" id="1_5xbjy"]
-[ext_resource type="TileSet" uid="uid://dqooc814o4qav" path="res://resources/placeholder_tileset.tres" id="2_fcfvj"]
+[ext_resource type="TileSet" uid="uid://dqooc814o4qav" path="res://resources/art stuff/placeholder_tileset.tres" id="2_fcfvj"]
 [ext_resource type="PackedScene" uid="uid://dldvgetyrngc3" path="res://scenes/player.tscn" id="2_rus8k"]
 [ext_resource type="PackedScene" uid="uid://c0jq10p5iulqu" path="res://scenes/world_boundary.tscn" id="3_rus8k"]
 [ext_resource type="PackedScene" uid="uid://dr2njxtavrur4" path="res://scenes/next_level_collision.tscn" id="5_4nkto"]
-[ext_resource type="PackedScene" uid="uid://1w83hqlrkygx" path="res://scenes/level_2.tscn" id="6_fcfvj"]
 
 [node name="Level 1" type="Node2D" unique_id=800538278]
 script = ExtResource("1_5xbjy")
@@ -19,7 +18,6 @@ position = Vector2(355, 691)
 
 [node name="NextLevelCollision" parent="." unique_id=707697642 instance=ExtResource("5_4nkto")]
 position = Vector2(5699, 1056)
-next_level_reference = ExtResource("6_fcfvj")
 
 [node name="Label" type="Label" parent="." unique_id=2006640759]
 z_index = -1
@@ -34,11 +32,13 @@ D to move right
 Space bar to jump"
 
 [node name="Label2" type="Label" parent="." unique_id=1563980589]
+visible = false
 z_index = -1
 offset_left = 16.0
 offset_top = -862.0
 offset_right = 745.0
 offset_bottom = -625.0
+scale = Vector2(0.99731696, 1)
 mouse_filter = 1
 theme_override_font_sizes/font_size = 32
 text = "Oh, you already know how to use the harpoon?
