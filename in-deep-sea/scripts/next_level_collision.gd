@@ -7,3 +7,7 @@ extends Area2D
 
 func _physics_process(delta: float) -> void:
 	rotation_degrees += rotation_speed * delta
+
+func _on_body_entered(body: Node2D) -> void:
+	if body is Player:
+		GlobalSignals.go_to_next_level_reached.emit(next_level_reference)

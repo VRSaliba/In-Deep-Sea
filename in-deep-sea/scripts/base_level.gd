@@ -6,6 +6,7 @@ const LEVEL_PATHS := [
 	"uid://1w83hqlrkygx",
 	"uid://g7err3hw88kq",
 	"uid://bfibno4vuqco2",
+	"uid://ku4kt6dr4tfq",
 ]
 
 @onready var world_boundary: Area2D = $WorldBoundary

@@ -7,7 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://c0jq10p5iulqu" path="res://scenes/world_boundary.tscn" id="4_1pn4d"]
 [ext_resource type="PackedScene" uid="uid://dr2njxtavrur4" path="res://scenes/next_level_collision.tscn" id="5_ah8om"]
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_h23n6"]
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_p6vls"]
 texture = ExtResource("1_70nk6")
 0:0/0 = 0
 0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
@@ -140,7 +140,7 @@ texture = ExtResource("1_70nk6")
 
 [sub_resource type="TileSet" id="TileSet_uwxec"]
 physics_layer_0/collision_layer = 1
-sources/0 = SubResource("TileSetAtlasSource_h23n6")
+sources/0 = SubResource("TileSetAtlasSource_p6vls")
 
 [node name="Level 3" type="Node2D" unique_id=1213795397]
 script = ExtResource("1_hhfj6")
@@ -397,3 +397,4 @@ position = Vector2(10611, 1271)
 
 [node name="NextLevelCollision" parent="." unique_id=707697642 instance=ExtResource("5_ah8om")]
 position = Vector2(11609, 759)
+next_level_reference = "uid://bfibno4vuqco2"

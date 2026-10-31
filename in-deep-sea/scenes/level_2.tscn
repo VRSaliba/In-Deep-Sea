@@ -4,7 +4,6 @@
 [ext_resource type="Texture2D" uid="uid://culstkn02qsko" path="res://resources/art stuff/world_tileset.png" id="1_jm1iu"]
 [ext_resource type="Script" uid="uid://hwwksds3lqff" path="res://scripts/level_2.gd" id="1_y0kc7"]
 [ext_resource type="PackedScene" uid="uid://bpu33gbmbr212" path="res://scenes/moving_platform.tscn" id="5_b4j7a"]
-[ext_resource type="PackedScene" uid="uid://g7err3hw88kq" path="res://scenes/level_3.tscn" id="5_wo48x"]
 [ext_resource type="PackedScene" uid="uid://dr2njxtavrur4" path="res://scenes/next_level_collision.tscn" id="6_wo48x"]
 [ext_resource type="PackedScene" uid="uid://c0jq10p5iulqu" path="res://scenes/world_boundary.tscn" id="7_y0kc7"]
 
@@ -156,7 +155,7 @@ position = Vector2(81, -455)
 
 [node name="NextLevelCollision" parent="." unique_id=707697642 instance=ExtResource("6_wo48x")]
 position = Vector2(7520, 1032)
-next_level_reference = ExtResource("5_wo48x")
+next_level_reference = "uid://1w83hqlrkygx"
 
 [node name="Moving Platform" parent="." unique_id=1446177362 node_paths=PackedStringArray("points") instance=ExtResource("5_b4j7a")]
 position = Vector2(1326, 312)
