@@ -72,6 +72,16 @@ var level_time: float = 0
 var grapple_target: Node2D = null        # The body the hook stuck to
 var grapple_local_offset := Vector2.ZERO # Hit point in the body's local space
 
+# Rope look. "Tension" = how close the rope is to its stretch limit (0 = loose, 1 = stretched)
+@export var rope_color_loose := Color(1.0, 1.0, 1.0)
+@export var rope_color_taut := Color(1.0, 0.1, 0.1)
+@export var rope_width_loose := 5.0
+@export var rope_width_taut := 2.0
+@export var rope_slack_ratio := 0.95     # distance / rope_length at or below this = fully loose
+@export var rope_stretch_ratio := 1.1    # distance / rope_length at or above this = fully stretched
+@export var rope_visual_smooth := 12.0   # How fast the color and width follow the tension
+var rope_tension := 0.0
+
 # ============================================================
 #  CAMERA ZOOM
 # ============================================================
@@ -97,6 +107,16 @@ var anim_state := AnimState.NONE
 var harpoon_anim_active := false
 var hook_release_timer := 0.0
 var base_scale := Vector2.ONE   # Skeleton scale without the left/right flip
+
+# Aiming the harpoon arm and gun at the hook anchor while hooked
+const SHOULDER_BONE := "upperarm_l"   # Where the arm starts
+const WRIST_BONE := "wrist_ik_l"      # IK target the arm reaches for
+const GUN_BONE := "arpao"             # Its +X axis is the direction the harpoon points
+const HAND_IK_NAME := "hand_ik_L"     # IK constraint that bends the hand toward its default spot
+const AIM_BLEND_SPEED := 10.0         # Higher = the arm snaps to the aim faster
+@export var arm_reach := 480.0        # Shoulder-to-wrist distance while aiming, in skeleton units
+var aim_mix_dirty := false
+var aim_warned := false
 
 # ============================================================
 #  STATE
@@ -136,7 +156,7 @@ func _ready() -> void:
 	rope.global_position = Vector2.ZERO
 	rope.add_point(Vector2.ZERO)
 	rope.add_point(Vector2.ZERO)
-	rope.width = 2.0
+	rope.width = rope_width_loose
 
 	prev_pos = global_position
 	curr_pos = global_position
@@ -146,6 +166,9 @@ func _ready() -> void:
 	harpoon.hide()
 
 	base_scale = Vector2(absf(spine.scale.x), spine.scale.y)
+
+	# Bones can only be modified manually just before the skeleton's world transforms update
+	spine.before_world_transforms_change.connect(_aim_gun_at_anchor)
 
 func die() -> void:
 	_release_grapple()
@@ -168,8 +191,21 @@ func _process(delta: float) -> void:
 		rope.set_point_position(0, draw_pos)
 		rope.set_point_position(1, grapple_anchor)
 		harpoon.global_position = grapple_anchor
+		_update_rope_look(draw_pos, delta)
 
 	_update_facing()
+
+func _update_rope_look(draw_pos: Vector2, delta: float) -> void:
+	var target := 0.0
+	if rope_length > 0.0:
+		var ratio := draw_pos.distance_to(grapple_anchor) / rope_length
+		target = clampf(inverse_lerp(rope_slack_ratio, rope_stretch_ratio, ratio), 0.0, 1.0)
+
+	# Smooth it so the rope doesn't flicker between physics ticks
+	rope_tension = lerpf(rope_tension, target, 1.0 - exp(-rope_visual_smooth * delta))
+
+	rope.default_color = rope_color_loose.lerp(rope_color_taut, rope_tension)
+	rope.width = lerpf(rope_width_loose, rope_width_taut, rope_tension)
 
 func _physics_process(delta: float) -> void:
 	_handle_grapple_input()
@@ -220,6 +256,49 @@ func _update_facing() -> void:
 # ============================================================
 #  ANIMATION
 # ============================================================
+
+# Moves the arm's IK target and the gun so they point at where the harpoon landed.
+# Called by the SpineSprite right before it updates its world transforms.
+func _aim_gun_at_anchor(_sprite = null) -> void:
+	if not is_grappling:
+		if aim_mix_dirty:
+			aim_mix_dirty = false
+			_set_hand_ik_mix(1.0)   # Give the hand back to the rig
+		return
+
+	aim_mix_dirty = true
+	_set_hand_ik_mix(0.0)           # The hand follows the forearm instead of bending toward its default spot
+
+	var k := 1.0 - exp(-AIM_BLEND_SPEED * get_process_delta_time())
+	var shoulder: Vector2 = spine.get_global_bone_transform(SHOULDER_BONE).origin
+	var wrist: Transform2D = spine.get_global_bone_transform(WRIST_BONE)
+	var gun: Transform2D = spine.get_global_bone_transform(GUN_BONE)
+
+	# 1) Put the wrist target on the shoulder -> anchor line, so the arm reaches toward the rope
+	var dir := (grapple_anchor - shoulder).normalized()
+	var wanted := shoulder + dir * arm_reach * absf(spine.global_scale.y)
+	var wrist_pos := wrist.origin.lerp(wanted, k)
+	spine.set_global_bone_transform(WRIST_BONE, Transform2D(wrist.x, wrist.y, wrist_pos))
+
+	# 2) Hold the gun at the wrist and point it at the anchor
+	var gun_pos := gun.origin.lerp(wrist_pos, k)
+	var turn := wrapf((grapple_anchor - gun_pos).angle() - gun.x.angle(), -PI, PI) * k
+	var rotated := Transform2D(turn, Vector2.ZERO) * Transform2D(gun.x, gun.y, Vector2.ZERO)
+	spine.set_global_bone_transform(GUN_BONE, Transform2D(rotated.x, rotated.y, gun_pos))
+
+# Sets the mix of the one-bone IK that points the hand at hand_ik_L (1.0 = on, 0.0 = off)
+func _set_hand_ik_mix(mix: float) -> void:
+	var skeleton = spine.get_skeleton()
+	if skeleton == null:
+		return
+	if not skeleton.has_method("find_ik_constraint"):
+		if not aim_warned:
+			aim_warned = true
+			push_warning("SpineSkeleton has no find_ik_constraint(); the hand can't be released from its IK")
+		return
+	var constraint = skeleton.find_ik_constraint(HAND_IK_NAME)
+	if constraint != null and constraint.has_method("set_mix"):
+		constraint.set_mix(mix)
 
 func _update_animation(delta: float) -> void:
 	var state := spine.get_animation_state()
@@ -494,6 +573,9 @@ func _try_grapple() -> void:
 		rope_length = global_position.distance_to(grapple_anchor)
 		rope_length = minf(rope_length, rope_max_length)
 		dash_timer = 0.0
+		rope_tension = 0.0
+		rope.default_color = rope_color_loose
+		rope.width = rope_width_loose
 		rope.show()
 		harpoon.global_position = grapple_anchor
 		harpoon.global_rotation = (grapple_anchor - global_position).angle()

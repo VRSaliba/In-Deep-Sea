@@ -69,9 +69,9 @@ text = "Go to next"
 
 [node name="Harpoon" type="Sprite2D" parent="." unique_id=1057439416]
 visible = false
-rotation = -0.0024991266
 scale = Vector2(0.07, 0.07)
 texture = ExtResource("4_qlg0r")
+offset = Vector2(450, 90)
 
 [connection signal="timeout" from="Dash Cooldown" to="." method="_on_dash_cooldown_timeout"]
 [connection signal="pressed" from="Camera2D/CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer/Restart Button" to="." method="_on_restart_button_pressed"]
