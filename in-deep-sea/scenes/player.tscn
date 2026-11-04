@@ -59,6 +59,7 @@ horizontal_alignment = 1
 layout_mode = 2
 offset_transform_enabled = true
 offset_transform_position = Vector2(0, 50)
+offset_transform_visual_only = false
 alignment = 1
 
 [node name="Restart Button" type="Button" parent="Camera2D/CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer" unique_id=223972215]
@@ -72,6 +73,7 @@ text = "Go to next"
 [node name="HBoxContainer2" type="HBoxContainer" parent="Camera2D/CanvasLayer/MarginContainer/VBoxContainer" unique_id=1018399393]
 layout_mode = 2
 offset_transform_enabled = true
+mouse_filter = 2
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Camera2D/CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer2" unique_id=1126326749]
 layout_mode = 2

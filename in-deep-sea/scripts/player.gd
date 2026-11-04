@@ -625,10 +625,11 @@ func collided_with_next_level_portal(_next_level_reference: String) -> void:
 	harpoon.hide()
 	rope.hide()
 
-	var m = int(level_time) / 60
-	var s = int(level_time) % 60
-	var ms = int(level_time * 1000) % 1000
-	label.text = "Time spent on this level: " + "%02d:%02d.%03d" % [m, s, ms]
+	@warning_ignore("integer_division")
+	var minutes = int(level_time) / 60
+	var seconds = int(level_time) % 60
+	var milliseconds = int(level_time * 1000) % 1000
+	label.text = "Time spent on this level: " + "%02d:%02d.%03d" % [minutes, seconds, milliseconds]
 	show_end_level_ui()
 
 func _on_restart_button_pressed() -> void:
