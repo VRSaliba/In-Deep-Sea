@@ -57,6 +57,8 @@ horizontal_alignment = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Camera2D/CanvasLayer/MarginContainer/VBoxContainer" unique_id=1338109462]
 layout_mode = 2
+offset_transform_enabled = true
+offset_transform_position = Vector2(0, 50)
 alignment = 1
 
 [node name="Restart Button" type="Button" parent="Camera2D/CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer" unique_id=223972215]
@@ -66,6 +68,23 @@ text = "Restart"
 [node name="Continue Button" type="Button" parent="Camera2D/CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer" unique_id=1947674047]
 layout_mode = 2
 text = "Go to next"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="Camera2D/CanvasLayer/MarginContainer/VBoxContainer" unique_id=1018399393]
+layout_mode = 2
+offset_transform_enabled = true
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Camera2D/CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer2" unique_id=1126326749]
+layout_mode = 2
+offset_transform_enabled = true
+offset_transform_position = Vector2(100, 200)
+
+[node name="ProgressBar" type="ProgressBar" parent="Camera2D/CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer2/VBoxContainer" unique_id=2100062696]
+custom_minimum_size = Vector2(50, 100)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 8
+fill_mode = 3
+show_percentage = false
 
 [node name="Harpoon" type="Sprite2D" parent="." unique_id=1057439416]
 visible = false

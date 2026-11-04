@@ -17,7 +17,7 @@ func _ready() -> void:
 	GlobalSignals.go_to_next_level_reached.connect(level_finished)
 	GlobalSignals.go_to_next_level_button_pressed.connect(go_to_next_level)
 	
-	next_level_string = "uid://ku4kt6dr4tfq"
+	next_level_string = "uid://g7err3hw88kq"
 	next_level_packed_scene = load(next_level_string)
 	go_to_next_level()
 
