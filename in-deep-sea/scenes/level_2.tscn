@@ -158,16 +158,16 @@ position = Vector2(7520, 1032)
 next_level_reference = "uid://1w83hqlrkygx"
 
 [node name="Moving Platform" parent="." unique_id=1446177362 node_paths=PackedStringArray("points") instance=ExtResource("5_b4j7a")]
-position = Vector2(1326, 312)
+position = Vector2(1783, 312)
 points = [NodePath("Marker2D"), NodePath("Marker2D2")]
 speed = 350.0
 pause_time = 1.0
 
 [node name="Marker2D" type="Marker2D" parent="Moving Platform" unique_id=1623988395]
-position = Vector2(391.33337, 0)
+position = Vector2(90, 0)
 
 [node name="Marker2D2" type="Marker2D" parent="Moving Platform" unique_id=209654323]
-position = Vector2(-90.666626, 0)
+position = Vector2(-390, 0)
 
 [node name="Moving Platform2" parent="." unique_id=1282003396 node_paths=PackedStringArray("points") instance=ExtResource("5_b4j7a")]
 position = Vector2(3282, 304)
