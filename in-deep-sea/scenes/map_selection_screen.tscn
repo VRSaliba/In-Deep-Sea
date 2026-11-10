@@ -1,0 +1,69 @@
+[gd_scene format=3 uid="uid://ks4llyj7r8e0"]
+
+[ext_resource type="Script" uid="uid://3o1ausd51v3n" path="res://scripts/map_selection_screen.gd" id="1_jggg5"]
+
+[node name="Map Selection Screen" type="CanvasLayer" unique_id=1699481369]
+script = ExtResource("1_jggg5")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=938013527]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer" unique_id=1114563294]
+custom_minimum_size = Vector2(0, 75)
+layout_mode = 2
+offset_transform_enabled = true
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="Button Level 1" type="Button" parent="VBoxContainer/HBoxContainer" unique_id=1287684744]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Level 1"
+
+[node name="Button Level 2" type="Button" parent="VBoxContainer/HBoxContainer" unique_id=1348034760]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Level 2"
+
+[node name="Button Level 3" type="Button" parent="VBoxContainer/HBoxContainer" unique_id=1526726620]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Level 3"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer" unique_id=1640276650]
+custom_minimum_size = Vector2(0, 75)
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="Button Level 4" type="Button" parent="VBoxContainer/HBoxContainer2" unique_id=450915417]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Level 4"
+
+[node name="Button Level 5" type="Button" parent="VBoxContainer/HBoxContainer2" unique_id=1234739981]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Level 5"
+
+[node name="Button Level 6" type="Button" parent="VBoxContainer/HBoxContainer2" unique_id=1381661661]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Level 6"
+
+[node name="Return Button" type="Button" parent="." unique_id=1069278972]
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 86.0
+offset_bottom = 47.0
+size_flags_horizontal = 4
+size_flags_vertical = 4
+text = "Go back"
+
+[connection signal="pressed" from="Return Button" to="." method="_on_return_button_pressed"]

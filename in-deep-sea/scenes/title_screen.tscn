@@ -1,0 +1,58 @@
+[gd_scene format=3 uid="uid://dqkkx6p0x8npj"]
+
+[ext_resource type="Script" uid="uid://bpuiy0t6rg26s" path="res://scripts/title_screen.gd" id="1_fgkus"]
+
+[node name="Title Screen" type="CanvasLayer" unique_id=472597120]
+script = ExtResource("1_fgkus")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1291796979]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer" unique_id=1076201325]
+layout_mode = 2
+offset_transform_enabled = true
+offset_transform_position = Vector2(0, -75)
+alignment = 1
+
+[node name="Name Label" type="Label" parent="VBoxContainer/HBoxContainer" unique_id=384291989]
+layout_mode = 2
+theme_override_font_sizes/font_size = 64
+text = "In Deep Sea"
+horizontal_alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer" unique_id=152700872]
+layout_mode = 2
+alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/VBoxContainer" unique_id=1564407854]
+layout_mode = 2
+offset_transform_enabled = true
+offset_transform_position = Vector2(0, 100)
+offset_transform_visual_only = false
+alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/VBoxContainer/HBoxContainer" unique_id=24493665]
+custom_minimum_size = Vector2(250, 125)
+layout_mode = 2
+offset_transform_visual_only = false
+theme_override_constants/separation = 40
+alignment = 1
+
+[node name="Start Button" type="Button" parent="VBoxContainer/VBoxContainer/HBoxContainer/VBoxContainer" unique_id=1317976741]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Play"
+icon_alignment = 1
+
+[node name="Exit Button" type="Button" parent="VBoxContainer/VBoxContainer/HBoxContainer/VBoxContainer" unique_id=389440812]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "Exit"
+
+[connection signal="pressed" from="VBoxContainer/VBoxContainer/HBoxContainer/VBoxContainer/Start Button" to="." method="_on_start_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/VBoxContainer/HBoxContainer/VBoxContainer/Exit Button" to="." method="_on_exit_button_pressed"]
