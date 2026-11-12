@@ -66,6 +66,11 @@ alignment = 1
 layout_mode = 2
 text = "Restart"
 
+[node name="MapSelectionButton" type="Button" parent="Camera2D/CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer" unique_id=21157700]
+layout_mode = 2
+text = "Go back to 
+Map Selector"
+
 [node name="Continue Button" type="Button" parent="Camera2D/CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer" unique_id=1947674047]
 layout_mode = 2
 text = "Go to next"
@@ -96,4 +101,5 @@ offset = Vector2(450, 90)
 
 [connection signal="timeout" from="Dash Cooldown" to="." method="_on_dash_cooldown_timeout"]
 [connection signal="pressed" from="Camera2D/CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer/Restart Button" to="." method="_on_restart_button_pressed"]
+[connection signal="pressed" from="Camera2D/CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer/MapSelectionButton" to="." method="_on_map_selection_button_pressed"]
 [connection signal="pressed" from="Camera2D/CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer/Continue Button" to="." method="_on_continue_button_pressed"]

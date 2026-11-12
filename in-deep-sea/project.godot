@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="In Deep Sea"
-run/main_scene="uid://cwxa63ap3jhgl"
+run/main_scene="uid://dqkkx6p0x8npj"
 config/features=PackedStringArray("4.7", "GL Compatibility")
 config/icon="res://icon.svg"
 

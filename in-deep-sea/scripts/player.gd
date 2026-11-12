@@ -191,7 +191,7 @@ func die() -> void:
 	set_physics_process(false)
 	set_process_input(false)
 	await get_tree().create_timer(1).timeout
-	GlobalSignals.restart_level_signal.emit()
+	get_tree().reload_current_scene()
 
 func _process(delta: float) -> void:
 	if not level_completed:
@@ -633,7 +633,10 @@ func collided_with_next_level_portal(_next_level_reference: String) -> void:
 	show_end_level_ui()
 
 func _on_restart_button_pressed() -> void:
-	GlobalSignals.restart_level_signal.emit()
+	get_tree().reload_current_scene()
 
 func _on_continue_button_pressed() -> void:
-	GlobalSignals.go_to_next_level_button_pressed.emit()   
+	GlobalSignals.go_to_next_level_button_pressed.emit()
+
+func _on_map_selection_button_pressed() -> void:
+	get_tree().change_scene_to_file("uid://ks4llyj7r8e0")
