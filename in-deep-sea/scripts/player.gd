@@ -144,6 +144,8 @@ var can_cut_jump := false
 var prev_pos := Vector2.ZERO
 var curr_pos := Vector2.ZERO
 
+var dead := false
+
 func _ready() -> void:
 	hide_end_level_ui()
 
@@ -185,6 +187,9 @@ func show_end_level_ui() -> void:
 	buttons_box_container.show()
 
 func die() -> void:
+	if dead:
+		return
+	dead = true
 	_release_grapple()
 	visible = false
 	set_process(false)

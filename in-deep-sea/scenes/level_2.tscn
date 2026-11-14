@@ -155,7 +155,7 @@ position = Vector2(81, -455)
 
 [node name="NextLevelCollision" parent="." unique_id=707697642 instance=ExtResource("6_wo48x")]
 position = Vector2(7520, 1032)
-next_level_reference = "uid://1w83hqlrkygx"
+next_level_reference = "uid://g7err3hw88kq"
 
 [node name="Moving Platform" parent="." unique_id=1446177362 node_paths=PackedStringArray("points") instance=ExtResource("5_b4j7a")]
 position = Vector2(1783, 312)

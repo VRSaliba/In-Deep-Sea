@@ -1,0 +1,60 @@
+[gd_scene format=3 uid="uid://dfhxghuvtedak"]
+
+[ext_resource type="Script" uid="uid://dhvncpq80yvig" path="res://scripts/geiser.gd" id="1_610ce"]
+[ext_resource type="Texture2D" uid="uid://5ycarioqe1l" path="res://resources/art stuff/Geiser-Etapas-transparente.png" id="2_prf1a"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1ne3y"]
+atlas = ExtResource("2_prf1a")
+region = Rect2(34, 0, 351, 1045)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_64cc3"]
+atlas = ExtResource("2_prf1a")
+region = Rect2(803, 0, 351, 1045)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5gay0"]
+atlas = ExtResource("2_prf1a")
+region = Rect2(419, 0, 351, 1045)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_oqe70"]
+atlas = ExtResource("2_prf1a")
+region = Rect2(1188, 0, 351, 1045)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_46gv6"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1ne3y")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_64cc3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5gay0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_oqe70")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1ne3y")
+}],
+"loop": 0,
+"name": &"default",
+"speed": 10.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_kcfq5"]
+size = Vector2(51, 27)
+
+[node name="Geiser" type="Area2D" unique_id=1558977942]
+script = ExtResource("1_610ce")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1093452951]
+position = Vector2(0, -142)
+scale = Vector2(0.3, 0.3)
+sprite_frames = SubResource("SpriteFrames_46gv6")
+
+[node name="Jump collision" type="CollisionShape2D" parent="." unique_id=109966744]
+position = Vector2(-2.5, -53)
+shape = SubResource("RectangleShape2D_kcfq5")
+
+[connection signal="body_entered" from="." to="." method="_on_jump_area_body_entered"]
