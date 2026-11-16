@@ -1,0 +1,14 @@
+[remap]
+
+importer="spine.json"
+type="SpineSkeletonFileResource"
+uid="uid://dry3kjb5mti4c"
+path="res://.godot/imported/cleitinho_bracoarpao.spine-json-3f5117f2ed41fc29e7dd996d7ec03e25.spjson"
+
+[deps]
+
+source_file="res://resources/AnimationPlayerInDeepSea/cleitinho_bracoarpao.spine-json"
+dest_files=["res://.godot/imported/cleitinho_bracoarpao.spine-json-3f5117f2ed41fc29e7dd996d7ec03e25.spjson"]
+
+[params]
+

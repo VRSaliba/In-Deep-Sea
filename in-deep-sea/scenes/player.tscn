@@ -1,11 +1,22 @@
 [gd_scene format=3 uid="uid://dldvgetyrngc3"]
 
 [ext_resource type="Script" uid="uid://brb8rjyfb10rn" path="res://scripts/player.gd" id="1_g2els"]
-[ext_resource type="SpineSkeletonDataResource" uid="uid://d00winglsxxc3" path="res://resources/player_spine_skeleton_data_resource.tres" id="2_dqkch"]
+[ext_resource type="SpineAtlasResource" uid="uid://dvtwapg2u0evs" path="res://resources/AnimationPlayerInDeepSea/cleitinho.atlas" id="2_tuyoq"]
+[ext_resource type="SpineSkeletonFileResource" uid="uid://bykenqvfrwsm4" path="res://resources/AnimationPlayerInDeepSea/cleitinho.spine-json" id="3_fjrip"]
 [ext_resource type="Texture2D" uid="uid://btajw8t0ueao2" path="res://resources/art stuff/Arpao.png" id="4_qlg0r"]
+[ext_resource type="SpineAtlasResource" uid="uid://dqte71amwlpsl" path="res://resources/AnimationPlayerInDeepSea/cleitinho_bracoarpao.atlas" id="4_smehm"]
+[ext_resource type="SpineSkeletonFileResource" uid="uid://dry3kjb5mti4c" path="res://resources/AnimationPlayerInDeepSea/cleitinho_bracoarpao.spine-json" id="5_ur7pv"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_wom6i"]
 size = Vector2(47, 179)
+
+[sub_resource type="SpineSkeletonDataResource" id="SpineSkeletonDataResource_awdsu"]
+atlas_res = ExtResource("4_smehm")
+skeleton_file_res = ExtResource("5_ur7pv")
+
+[sub_resource type="SpineSkeletonDataResource" id="SpineSkeletonDataResource_x07em"]
+atlas_res = ExtResource("2_tuyoq")
+skeleton_file_res = ExtResource("3_fjrip")
 
 [node name="Player" type="CharacterBody2D" unique_id=1396639506]
 script = ExtResource("1_g2els")
@@ -24,8 +35,22 @@ target_position = Vector2(300, 0)
 
 [node name="Line2D" type="Line2D" parent="." unique_id=538459976]
 
+[node name="ArmPivot" type="Node2D" parent="." unique_id=145744546]
+position = Vector2(-10, -40)
+
+[node name="Arm" type="SpineSprite" parent="ArmPivot" unique_id=1367525392]
+skeleton_data_res = SubResource("SpineSkeletonDataResource_awdsu")
+preview_skin = "Default"
+preview_animation = "-- Empty --"
+preview_frame = false
+preview_time = 0.0
+position = Vector2(10, 125)
+scale = Vector2(0.1, 0.1)
+
+[node name="Marker2D" type="Marker2D" parent="ArmPivot" unique_id=378255397]
+
 [node name="CleitinhoInDeepSea" type="SpineSprite" parent="." unique_id=875455016]
-skeleton_data_res = ExtResource("2_dqkch")
+skeleton_data_res = SubResource("SpineSkeletonDataResource_x07em")
 preview_skin = "Default"
 preview_animation = "-- Empty --"
 preview_frame = false

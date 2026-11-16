@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://brw7q2x1oh3an"
-path="res://.godot/imported/Cleitinho_In_Deep_Sea.PNG-2925681c1b057c56299da8fbee7e8bf7.ctex"
+uid="uid://byiyxys638udp"
+path="res://.godot/imported/cleitinho.png-6393561922b2b7ef90e6570e33d53599.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/art stuff/Cleitinho_In_Deep_Sea.PNG"
-dest_files=["res://.godot/imported/Cleitinho_In_Deep_Sea.PNG-2925681c1b057c56299da8fbee7e8bf7.ctex"]
+source_file="res://resources/AnimationPlayerInDeepSea/cleitinho.png"
+dest_files=["res://.godot/imported/cleitinho.png-6393561922b2b7ef90e6570e33d53599.ctex"]
 
 [params]
 

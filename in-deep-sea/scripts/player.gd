@@ -10,8 +10,11 @@ class_name Player
 var level_completed: bool = false
 var level_time: float = 0
 
-# Spine character. Adjust the path to match your scene tree.
-@onready var spine: SpineSprite = $CleitinhoInDeepSea
+# The body and the arm are two separate Spine skeletons.
+# Adjust the paths to match your scene tree.
+@onready var spine: SpineSprite = $CleitinhoInDeepSea      # The body
+@onready var arm_pivot: Node2D = $ArmPivot                  # Place this node on the shoulder
+@onready var arm: SpineSprite = $ArmPivot/Arm               # The arm skeleton; its origin sits on the pivot
 
 @onready var harpoon: Sprite2D = $Harpoon
 
@@ -97,29 +100,34 @@ var rope_tension := 0.0
 @export var pan_smooth := 8.0
 
 # ============================================================
+#  ARM AIMING
+# ============================================================
+# The arm skeleton is rotated as a whole around the pivot.
+# Rotation 0 must make the arm point to the right in the arm's own art;
+# if it points somewhere else, set this offset (radians, e.g. deg_to_rad(90)).
+const ARM_ROTATION_OFFSET := 0.0
+
+# ============================================================
 #  ANIMATION
 # ============================================================
-const TRACK_BODY := 0
-const TRACK_HARPOON := 1
-const ANIM_MIX := 0.15
-const HOOK_MIX := 0.05
-const HARPOON_OUT_TIME := 0.5
+# Both skeletons (body and arm) use the same animation names.
+# Blending between animations uses the default mix set on each SpineSkeletonDataResource.
+const ANIM_IDLE := "idle"
+const ANIM_RUN := "loop_run"
+const ANIM_RUN_OUT := "out_run"
+const ANIM_AIR := "jump"
+const ANIM_HOOK_IN := "in_arpao"
+const ANIM_HOOK_LOOP := "loop_arpao"
+const ANIM_HOOK_OUT := "out_arpao"
 
-enum AnimState { NONE, IDLE, RUN, AIR, DASH, HOOKED }
+enum AnimState { NONE, IDLE, RUN, AIR, HOOKED }
 var anim_state := AnimState.NONE
-var harpoon_anim_active := false
-var hook_release_timer := 0.0
-var base_scale := Vector2.ONE
 
-# Aiming the harpoon arm and gun at the hook anchor while hooked
-const SHOULDER_BONE := "upperarm_l"   # Where the arm starts
-const WRIST_BONE := "wrist_ik_l"      # IK target the arm reaches for
-const GUN_BONE := "arpao"             # Its +X axis is the direction the harpoon points
-const HAND_IK_NAME := "hand_ik_L"     # IK constraint that bends the hand toward its default spot
-const AIM_BLEND_SPEED := 10.0         # Higher = the arm snaps to the aim faster
-@export var arm_reach := 480.0        # Shoulder-to-wrist distance while aiming, in skeleton units
-var aim_mix_dirty := false
-var aim_warned := false
+var base_scale := Vector2.ONE        # Body scale without the left/right flip
+var arm_base_scale := Vector2.ONE    # Arm scale without the up/down flip
+var arm_pivot_base_x := 0.0          # Pivot x while facing right
+var arm_base_position := Vector2.ZERO  # Arm position inside the pivot while pointing right
+var jump_anim_active := false        # True after a real jump, until the player lands
 
 # ============================================================
 #  STATE
@@ -170,9 +178,13 @@ func _ready() -> void:
 	harpoon.hide()
 
 	base_scale = Vector2(absf(spine.scale.x), spine.scale.y)
+	arm_base_scale = Vector2(arm.scale.x, absf(arm.scale.y))
+	arm_pivot_base_x = arm_pivot.position.x
+	arm_base_position = arm.position
 
-	# Bones can only be modified manually just before the skeleton's world transforms update
-	spine.before_world_transforms_change.connect(_aim_gun_at_anchor)
+	# The arm is rotated and flipped from _process, so physics interpolation must not smooth it
+	arm_pivot.physics_interpolation_mode = Node.PHYSICS_INTERPOLATION_MODE_OFF
+
 	dash_bar.max_value = 1.0
 	dash_bar.value = 1.0
 	_update_dash_bar_color()
@@ -217,6 +229,7 @@ func _process(delta: float) -> void:
 	_update_dash_bar_color()
 
 	_update_facing()
+	_update_arm_aim(draw_pos)
 
 func _update_rope_look(draw_pos: Vector2, delta: float) -> void:
 	var target := 0.0
@@ -250,7 +263,7 @@ func _physics_process(delta: float) -> void:
 
 	_handle_collisions()
 	_update_camera(delta)
-	_update_animation(delta)
+	_update_animation()
 
 	prev_pos = curr_pos
 	curr_pos = global_position
@@ -266,11 +279,13 @@ func _update_dash_bar_color() -> void:
 		fill_style.bg_color = Color.RED.lerp(Color.GREEN, ratio)
 
 # ============================================================
-#  FACING
+#  FACING (Spine has no flip_h, so we flip the body's scale)
 # ============================================================
 
 func _face_left(left: bool) -> void:
 	spine.scale.x = -base_scale.x if left else base_scale.x
+	# The arm isn't a child of the body, so move its pivot to the other shoulder
+	arm_pivot.position.x = -arm_pivot_base_x if left else arm_pivot_base_x
 
 func _is_facing_left() -> bool:
 	return spine.scale.x < 0.0
@@ -281,80 +296,60 @@ func _update_facing() -> void:
 	var move_input := Input.get_axis("move_left", "move_right")
 	if move_input != 0.0:
 		_face_left(move_input < 0.0)
+	else:
+		# No input (on the ground or in the air): face the side the mouse is on
+		var to_mouse := get_global_mouse_position() - global_position
+		if absf(to_mouse.x) > 1.0:
+			_face_left(to_mouse.x < 0.0)
+
+# ============================================================
+#  ARM AIMING (the whole arm node rotates around its pivot)
+# ============================================================
+
+func _update_arm_aim(draw_pos: Vector2) -> void:
+	# Pivot position in the interpolated frame, so the arm doesn't jitter
+	var origin := draw_pos + (arm_pivot.global_position - global_position)
+	var target := grapple_anchor if is_grappling else get_global_mouse_position()
+	var aim := target - origin
+	if aim.length() < 1.0:
+		return
+
+	var angle := aim.angle()
+
+	# While walking (not hooked), the arm can't point backwards
+	if not is_grappling:
+		var move_input := Input.get_axis("move_left", "move_right")
+		if move_input > 0.0:
+			angle = clampf(angle, -PI / 2.0, PI / 2.0)
+		elif move_input < 0.0:
+			var mirrored := wrapf(PI - angle, -PI, PI)
+			mirrored = clampf(mirrored, -PI / 2.0, PI / 2.0)
+			angle = PI - mirrored
+
+	arm_pivot.global_rotation = angle + ARM_ROTATION_OFFSET
+
+	# Keep the arm upright when it points to the left. The art is mirrored, so its
+	# offset has to be mirrored too, or the shoulder would drift away from the pivot.
+	var pointing_left := cos(angle) < 0.0
+	arm.scale.y = -arm_base_scale.y if pointing_left else arm_base_scale.y
+	arm.position = Vector2(arm_base_position.x, -arm_base_position.y if pointing_left else arm_base_position.y)
 
 # ============================================================
 #  ANIMATION
 # ============================================================
 
-# Moves the arm's IK target and the gun so they point at where the harpoon landed.
-# Called by the SpineSprite right before it updates its world transforms.
-func _aim_gun_at_anchor(_sprite = null) -> void:
-	if not is_grappling:
-		if aim_mix_dirty:
-			aim_mix_dirty = false
-			_set_hand_ik_mix(1.0)   # Give the hand back to the rig
-		return
-
-	aim_mix_dirty = true
-	_set_hand_ik_mix(0.0)           # The hand follows the forearm instead of bending toward its default spot
-
-	var k := 1.0 - exp(-AIM_BLEND_SPEED * get_process_delta_time())
-	var shoulder: Vector2 = spine.get_global_bone_transform(SHOULDER_BONE).origin
-	var wrist: Transform2D = spine.get_global_bone_transform(WRIST_BONE)
-	var gun: Transform2D = spine.get_global_bone_transform(GUN_BONE)
-
-	# 1) Put the wrist target on the shoulder -> anchor line, so the arm reaches toward the rope
-	var dir := (grapple_anchor - shoulder).normalized()
-	var wanted := shoulder + dir * arm_reach * absf(spine.global_scale.y)
-	var wrist_pos := wrist.origin.lerp(wanted, k)
-	spine.set_global_bone_transform(WRIST_BONE, Transform2D(wrist.x, wrist.y, wrist_pos))
-
-	# 2) Hold the gun at the wrist and point it at the anchor
-	var gun_pos := gun.origin.lerp(wrist_pos, k)
-	var turn := wrapf((grapple_anchor - gun_pos).angle() - gun.x.angle(), -PI, PI) * k
-	var rotated := Transform2D(turn, Vector2.ZERO) * Transform2D(gun.x, gun.y, Vector2.ZERO)
-	spine.set_global_bone_transform(GUN_BONE, Transform2D(rotated.x, rotated.y, gun_pos))
-
-# Sets the mix of the one-bone IK that points the hand at hand_ik_L (1.0 = on, 0.0 = off)
-func _set_hand_ik_mix(mix: float) -> void:
-	var skeleton = spine.get_skeleton()
-	if skeleton == null:
-		return
-	if not skeleton.has_method("find_ik_constraint"):
-		if not aim_warned:
-			aim_warned = true
-			push_warning("SpineSkeleton has no find_ik_constraint(); the hand can't be released from its IK")
-		return
-	var constraint = skeleton.find_ik_constraint(HAND_IK_NAME)
-	if constraint != null and constraint.has_method("set_mix"):
-		constraint.set_mix(mix)
-
-func _update_animation(delta: float) -> void:
-	var state := spine.get_animation_state()
-	if state == null:
-		return
-
-	if hook_release_timer > 0.0:
-		hook_release_timer -= delta
-
-	if is_grappling and not harpoon_anim_active:
-		harpoon_anim_active = true
-		hook_release_timer = 0.0
-		state.set_animation("in_arpao", false, TRACK_HARPOON)
-		state.add_animation("loop_arpao", 0.0, true, TRACK_HARPOON)
-	elif not is_grappling and harpoon_anim_active:
-		harpoon_anim_active = false
-		hook_release_timer = HARPOON_OUT_TIME
-		state.set_animation("out_arpao", false, TRACK_HARPOON)
-		state.add_empty_animation(TRACK_HARPOON, ANIM_MIX, 0.0)
+# One state machine drives both skeletons, so the body and the arm stay in sync
+func _update_animation() -> void:
+	# The jump flag only lasts until the player lands or hooks onto something
+	if is_grappling or (is_on_floor() and velocity.y >= 0.0):
+		jump_anim_active = false
 
 	var desired := AnimState.IDLE
-	if is_grappling or hook_release_timer > 0.0:
+	if is_grappling:
 		desired = AnimState.HOOKED
-	elif dash_timer > 0.0:
-		desired = AnimState.DASH
 	elif not is_on_floor():
-		desired = AnimState.AIR
+		# Only play the jump animation after a real jump (not when falling off a ledge)
+		desired = AnimState.AIR if jump_anim_active else AnimState.IDLE
 	elif Input.get_axis("move_left", "move_right") != 0.0:
 		desired = AnimState.RUN
 
@@ -363,23 +358,37 @@ func _update_animation(delta: float) -> void:
 
 	var previous := anim_state
 	anim_state = desired
+	_play_state_animation(spine, desired, previous)
+	_play_state_animation(arm, desired, previous)
 
+func _play_state_animation(sprite: SpineSprite, desired: AnimState, previous: AnimState) -> void:
+	var state = sprite.get_animation_state()
+	if state == null:
+		return
+
+	# The animation that plays for the new state (after any "out" animation)
+	var next_name := ANIM_IDLE
+	var next_loop := true
 	match desired:
-		AnimState.HOOKED:
-			state.set_empty_animation(TRACK_BODY, HOOK_MIX)
-		AnimState.IDLE:
-			if previous == AnimState.RUN:
-				state.set_animation("out_run", false, TRACK_BODY)
-				state.add_empty_animation(TRACK_BODY, ANIM_MIX, 0.0)
-			else:
-				state.set_empty_animation(TRACK_BODY, ANIM_MIX)
 		AnimState.RUN:
-			state.set_animation("in_run", false, TRACK_BODY)
-			state.add_animation("loop_run", 0.0, true, TRACK_BODY)
+			next_name = ANIM_RUN
 		AnimState.AIR:
-			state.set_animation("jump", false, TRACK_BODY)
-		AnimState.DASH:
-			state.set_animation("dash", false, TRACK_BODY)
+			next_name = ANIM_AIR
+			next_loop = false
+
+	if desired == AnimState.HOOKED:
+		state.set_animation(ANIM_HOOK_IN, false, 0)
+		state.add_animation(ANIM_HOOK_LOOP, 0.0, true, 0)
+	elif previous == AnimState.HOOKED:
+		# Retract the harpoon, then continue with the new state
+		state.set_animation(ANIM_HOOK_OUT, false, 0)
+		state.add_animation(next_name, 0.0, next_loop, 0)
+	elif previous == AnimState.RUN and desired == AnimState.IDLE:
+		# Stop running, then idle
+		state.set_animation(ANIM_RUN_OUT, false, 0)
+		state.add_animation(next_name, 0.0, next_loop, 0)
+	else:
+		state.set_animation(next_name, next_loop, 0)
 
 # ============================================================
 #  WALKING SYSTEM
@@ -440,6 +449,7 @@ func _update_walking_movement(delta: float) -> void:
 		release_timer = 0.0
 		jump_was_pressed = true
 		can_cut_jump = true
+		jump_anim_active = true
 		coyote_timer = 0.0
 		jump_buffer_timer = 0.0
 
@@ -617,6 +627,7 @@ func _on_dash_cooldown_timeout() -> void:
 
 func step_on_trampoline(jump_force: float) -> void:
 	velocity.y = -jump_force
+	jump_anim_active = true
 	can_cut_jump = false
 	release_timer = 0.0
 	coyote_timer = 0.0
@@ -627,6 +638,7 @@ func collided_with_next_level_portal(_next_level_reference: String) -> void:
 	velocity = Vector2.ZERO
 	set_physics_process(false)
 	spine.hide()
+	arm_pivot.hide()
 	harpoon.hide()
 	rope.hide()
 

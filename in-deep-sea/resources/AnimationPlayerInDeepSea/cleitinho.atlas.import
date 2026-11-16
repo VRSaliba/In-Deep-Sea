@@ -1,0 +1,16 @@
+[remap]
+
+importer="spine.atlas"
+type="SpineAtlasResource"
+uid="uid://dvtwapg2u0evs"
+path="res://.godot/imported/cleitinho.atlas-baf4ba55c1cc63efd1f21d5326ac4e87.spatlas"
+
+[deps]
+
+source_file="res://resources/AnimationPlayerInDeepSea/cleitinho.atlas"
+dest_files=["res://.godot/imported/cleitinho.atlas-baf4ba55c1cc63efd1f21d5326ac4e87.spatlas"]
+
+[params]
+
+normal_map_prefix="n"
+specular_map_prefix="s"

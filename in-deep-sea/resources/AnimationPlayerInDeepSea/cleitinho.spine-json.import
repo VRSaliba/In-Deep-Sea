@@ -1,0 +1,14 @@
+[remap]
+
+importer="spine.json"
+type="SpineSkeletonFileResource"
+uid="uid://bykenqvfrwsm4"
+path="res://.godot/imported/cleitinho.spine-json-f2b1e54d6ca21bb1be8f33b47debea9b.spjson"
+
+[deps]
+
+source_file="res://resources/AnimationPlayerInDeepSea/cleitinho.spine-json"
+dest_files=["res://.godot/imported/cleitinho.spine-json-f2b1e54d6ca21bb1be8f33b47debea9b.spjson"]
+
+[params]
+

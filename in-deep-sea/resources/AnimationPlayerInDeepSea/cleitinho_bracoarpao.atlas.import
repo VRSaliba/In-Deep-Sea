@@ -1,0 +1,16 @@
+[remap]
+
+importer="spine.atlas"
+type="SpineAtlasResource"
+uid="uid://dqte71amwlpsl"
+path="res://.godot/imported/cleitinho_bracoarpao.atlas-dd6f56c05227eb26338477030e2a2b18.spatlas"
+
+[deps]
+
+source_file="res://resources/AnimationPlayerInDeepSea/cleitinho_bracoarpao.atlas"
+dest_files=["res://.godot/imported/cleitinho_bracoarpao.atlas-dd6f56c05227eb26338477030e2a2b18.spatlas"]
+
+[params]
+
+normal_map_prefix="n"
+specular_map_prefix="s"
