@@ -4,7 +4,7 @@
 [ext_resource type="Script" uid="uid://bvew45kjl7xyx" path="res://scripts/level_4.gd" id="1_cp0rv"]
 [ext_resource type="PackedScene" uid="uid://dldvgetyrngc3" path="res://scenes/player.tscn" id="2_6j14n"]
 [ext_resource type="PackedScene" uid="uid://c0jq10p5iulqu" path="res://scenes/world_boundary.tscn" id="3_6j14n"]
-[ext_resource type="PackedScene" uid="uid://da0iw28yeojgd" path="res://scenes/ourico_do_mar.tscn" id="5_wom6i"]
+[ext_resource type="PackedScene" uid="uid://da0iw28yeojgd" path="res://scenes/coral.tscn" id="5_wom6i"]
 [ext_resource type="PackedScene" uid="uid://dr2njxtavrur4" path="res://scenes/next_level_collision.tscn" id="6_ycko3"]
 [ext_resource type="PackedScene" uid="uid://cctbhkgekasqp" path="res://scenes/full_jumping_geiser.tscn" id="7_x7blo"]
 
@@ -485,4 +485,4 @@ position = Vector2(9785, 553)
 next_level_reference = "uid://ku4kt6dr4tfq"
 
 [node name="Full Jumping Geiser" parent="." unique_id=641473488 instance=ExtResource("7_x7blo")]
-position = Vector2(4055, 853)
+position = Vector2(4054, 865)

@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://ba470lxp3oyne" path="res://scripts/level_5.gd" id="1_tbt7t"]
 [ext_resource type="PackedScene" uid="uid://dldvgetyrngc3" path="res://scenes/player.tscn" id="1_x4gu4"]
 [ext_resource type="Texture2D" uid="uid://culstkn02qsko" path="res://resources/art stuff/world_tileset.png" id="2_w2wna"]
-[ext_resource type="PackedScene" uid="uid://da0iw28yeojgd" path="res://scenes/ourico_do_mar.tscn" id="3_e224s"]
+[ext_resource type="PackedScene" uid="uid://da0iw28yeojgd" path="res://scenes/coral.tscn" id="3_e224s"]
 [ext_resource type="PackedScene" uid="uid://dr2njxtavrur4" path="res://scenes/next_level_collision.tscn" id="4_wcwf6"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_e224s"]

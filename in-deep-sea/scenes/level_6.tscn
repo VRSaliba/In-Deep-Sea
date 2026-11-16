@@ -6,7 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://c0jq10p5iulqu" path="res://scenes/world_boundary.tscn" id="3_hi6ks"]
 [ext_resource type="PackedScene" uid="uid://dr2njxtavrur4" path="res://scenes/next_level_collision.tscn" id="5_hi6ks"]
 [ext_resource type="PackedScene" uid="uid://cctbhkgekasqp" path="res://scenes/full_jumping_geiser.tscn" id="6_6x5s0"]
-[ext_resource type="PackedScene" uid="uid://da0iw28yeojgd" path="res://scenes/ourico_do_mar.tscn" id="7_uwnnm"]
+[ext_resource type="PackedScene" uid="uid://da0iw28yeojgd" path="res://scenes/coral.tscn" id="7_uwnnm"]
 
 [node name="Level 6" type="Node2D" unique_id=1602919937]
 script = ExtResource("1_ku6r7")

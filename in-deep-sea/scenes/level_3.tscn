@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://culstkn02qsko" path="res://resources/art stuff/world_tileset.png" id="1_70nk6"]
 [ext_resource type="Script" uid="uid://ctpu5h5xky26j" path="res://scripts/level_3.gd" id="1_hhfj6"]
-[ext_resource type="PackedScene" uid="uid://da0iw28yeojgd" path="res://scenes/ourico_do_mar.tscn" id="2_h23n6"]
+[ext_resource type="PackedScene" uid="uid://da0iw28yeojgd" path="res://scenes/coral.tscn" id="2_h23n6"]
 [ext_resource type="PackedScene" uid="uid://dldvgetyrngc3" path="res://scenes/player.tscn" id="3_uwxec"]
 [ext_resource type="PackedScene" uid="uid://c0jq10p5iulqu" path="res://scenes/world_boundary.tscn" id="4_1pn4d"]
 [ext_resource type="PackedScene" uid="uid://dr2njxtavrur4" path="res://scenes/next_level_collision.tscn" id="5_ah8om"]
