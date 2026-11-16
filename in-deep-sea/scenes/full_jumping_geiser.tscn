@@ -1,0 +1,14 @@
+[gd_scene format=3 uid="uid://cctbhkgekasqp"]
+
+[ext_resource type="PackedScene" uid="uid://dfhxghuvtedak" path="res://scenes/geiser.tscn" id="1_bidm0"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_46gv6"]
+size = Vector2(100, 51)
+
+[node name="Full Jumping Geiser" type="StaticBody2D" unique_id=641473488]
+
+[node name="Geiser" parent="." unique_id=1558977942 instance=ExtResource("1_bidm0")]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1716526090]
+position = Vector2(1, -13.5)
+shape = SubResource("RectangleShape2D_46gv6")

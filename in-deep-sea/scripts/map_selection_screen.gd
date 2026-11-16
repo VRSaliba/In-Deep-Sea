@@ -19,4 +19,4 @@ func _on_button_level_5_pressed() -> void:
 	get_tree().change_scene_to_file("uid://ku4kt6dr4tfq")
 
 func _on_button_level_6_pressed() -> void:
-	get_tree().change_scene_to_file("uid://dqkkx6p0x8npj")
+	get_tree().change_scene_to_file("uid://bp4dhjutnry7f")

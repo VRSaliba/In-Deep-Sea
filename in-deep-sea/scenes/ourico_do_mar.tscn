@@ -63,7 +63,11 @@ region = Rect2(35, 505, 200, 200)
 atlas = ExtResource("2_q64d5")
 region = Rect2(270, 505, 200, 200)
 
-[sub_resource type="SpriteFrames" id="SpriteFrames_banqi"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_gik32"]
+atlas = ExtResource("2_q64d5")
+region = Rect2(231, 432, 199, 200)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_x07em"]
 animations = [{
 "frames": [{
 "duration": 1.0,
@@ -110,24 +114,25 @@ animations = [{
 }, {
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_fujtc")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gik32")
 }],
 "loop": 1,
 "name": &"default",
-"speed": 5.0
+"speed": 1.0
 }]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_x07em"]
 radius = 169.99998
 
 [node name="Ourico do mar" type="Area2D" unique_id=1022729656]
-scale = Vector2(0.1, 0.1)
+scale = Vector2(0.15, 0.15)
 script = ExtResource("1_q64d5")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=93299714]
-modulate = Color(0.15487596, 0.154876, 0.15487596, 1)
-position = Vector2(5.000006, 7.6293945e-06)
-scale = Vector2(1.6499999, 1.6999999)
-sprite_frames = SubResource("SpriteFrames_banqi")
+scale = Vector2(2, 2)
+sprite_frames = SubResource("SpriteFrames_x07em")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=391376308]
 shape = SubResource("CircleShape2D_x07em")

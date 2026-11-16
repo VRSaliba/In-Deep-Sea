@@ -197,30 +197,39 @@ position = Vector2(3677, 439)
 
 [node name="Ourico do mar2" parent="." unique_id=173123975 instance=ExtResource("3_e224s")]
 position = Vector2(3705, 362)
+rotation = 4.712389
 
 [node name="Ourico do mar3" parent="." unique_id=1278247874 instance=ExtResource("3_e224s")]
 position = Vector2(3722, 306)
+rotation = 4.712389
 
 [node name="Ourico do mar4" parent="." unique_id=1001749336 instance=ExtResource("3_e224s")]
 position = Vector2(3732, 259)
+rotation = 4.712389
 
 [node name="Ourico do mar5" parent="." unique_id=101172076 instance=ExtResource("3_e224s")]
 position = Vector2(3755, 195.00002)
+rotation = 4.712389
 
 [node name="Ourico do mar6" parent="." unique_id=1143403111 instance=ExtResource("3_e224s")]
 position = Vector2(2651, 1351)
+rotation = 1.5707964
 
 [node name="Ourico do mar7" parent="." unique_id=1362424163 instance=ExtResource("3_e224s")]
 position = Vector2(2683, 1433.0001)
+rotation = 1.5707964
 
 [node name="Ourico do mar8" parent="." unique_id=1601811028 instance=ExtResource("3_e224s")]
 position = Vector2(2698, 1481.0001)
+rotation = 1.5707964
 
 [node name="Ourico do mar9" parent="." unique_id=267105020 instance=ExtResource("3_e224s")]
 position = Vector2(2714, 1525.0001)
+rotation = 1.5707964
 
 [node name="Ourico do mar10" parent="." unique_id=226512898 instance=ExtResource("3_e224s")]
 position = Vector2(2730, 1593.0001)
+rotation = 1.5707964
 
 [node name="Ourico do mar11" parent="." unique_id=746483523 instance=ExtResource("3_e224s")]
 position = Vector2(6281, 3447)
@@ -245,33 +254,43 @@ position = Vector2(6791, 5174)
 
 [node name="Ourico do mar18" parent="." unique_id=2031805520 instance=ExtResource("3_e224s")]
 position = Vector2(6811, 5116)
+rotation = 1.5707964
 
 [node name="Ourico do mar19" parent="." unique_id=1512341360 instance=ExtResource("3_e224s")]
 position = Vector2(6810, 5031)
+rotation = 1.5707964
 
 [node name="Ourico do mar20" parent="." unique_id=382803837 instance=ExtResource("3_e224s")]
 position = Vector2(6825, 4941)
+rotation = 1.5707964
 
 [node name="Ourico do mar21" parent="." unique_id=889628982 instance=ExtResource("3_e224s")]
 position = Vector2(6825, 4835)
+rotation = 1.5707964
 
 [node name="Ourico do mar22" parent="." unique_id=13830573 instance=ExtResource("3_e224s")]
 position = Vector2(6826, 4722)
+rotation = 1.5707964
 
 [node name="Ourico do mar23" parent="." unique_id=1171584858 instance=ExtResource("3_e224s")]
 position = Vector2(8296, 3191)
+rotation = 3.1415927
 
 [node name="Ourico do mar24" parent="." unique_id=665795753 instance=ExtResource("3_e224s")]
 position = Vector2(8208, 3176)
+rotation = 3.1415927
 
 [node name="Ourico do mar25" parent="." unique_id=1895985411 instance=ExtResource("3_e224s")]
 position = Vector2(8121, 3162)
+rotation = 3.1415927
 
 [node name="Ourico do mar26" parent="." unique_id=532084217 instance=ExtResource("3_e224s")]
 position = Vector2(8043, 3144)
+rotation = 3.1415927
 
 [node name="Ourico do mar27" parent="." unique_id=980171450 instance=ExtResource("3_e224s")]
 position = Vector2(7990, 3126)
+rotation = 3.1415927
 
 [node name="Ourico do mar136" parent="." unique_id=959715194 instance=ExtResource("3_e224s")]
 position = Vector2(5873, 5172)
@@ -353,111 +372,147 @@ position = Vector2(12791, 2468)
 
 [node name="Ourico do mar32" parent="." unique_id=519546066 instance=ExtResource("3_e224s")]
 position = Vector2(14708, 2465)
+rotation = 4.712389
 
 [node name="Ourico do mar33" parent="." unique_id=1379300418 instance=ExtResource("3_e224s")]
 position = Vector2(14710, 2369)
+rotation = 4.712389
 
 [node name="Ourico do mar34" parent="." unique_id=1237953721 instance=ExtResource("3_e224s")]
 position = Vector2(14826, 2373)
+rotation = 1.5707964
 
 [node name="Ourico do mar35" parent="." unique_id=1360809141 instance=ExtResource("3_e224s")]
 position = Vector2(14826, 2450)
+rotation = 1.5707964
 
 [node name="Ourico do mar36" parent="." unique_id=1413977768 instance=ExtResource("3_e224s")]
 position = Vector2(16784, 2463)
+rotation = 4.712389
 
 [node name="Ourico do mar37" parent="." unique_id=662059935 instance=ExtResource("3_e224s")]
 position = Vector2(16793, 2378)
+rotation = 4.712389
 
 [node name="Ourico do mar38" parent="." unique_id=2125003464 instance=ExtResource("3_e224s")]
 position = Vector2(16904, 2386)
+rotation = 1.5707964
 
 [node name="Ourico do mar39" parent="." unique_id=128537774 instance=ExtResource("3_e224s")]
 position = Vector2(16911, 2450)
+rotation = 1.5707964
 
 [node name="Ourico do mar40" parent="." unique_id=1813358845 instance=ExtResource("3_e224s")]
 position = Vector2(16793, 2044)
+rotation = 4.712389
 
 [node name="Ourico do mar41" parent="." unique_id=1275602098 instance=ExtResource("3_e224s")]
 position = Vector2(16906, 2042)
+rotation = 1.5707964
 
 [node name="Ourico do mar42" parent="." unique_id=993599024 instance=ExtResource("3_e224s")]
 position = Vector2(9097, 1283)
+rotation = 5.497787
 
 [node name="Ourico do mar43" parent="." unique_id=2026322314 instance=ExtResource("3_e224s")]
 position = Vector2(9180, 1258)
+rotation = 5.497787
 
 [node name="Ourico do mar44" parent="." unique_id=14279309 instance=ExtResource("3_e224s")]
 position = Vector2(9259, 1211)
+rotation = 5.497787
 
 [node name="Ourico do mar45" parent="." unique_id=189770040 instance=ExtResource("3_e224s")]
 position = Vector2(9337, 1175)
+rotation = 5.497787
 
 [node name="Ourico do mar46" parent="." unique_id=2060344652 instance=ExtResource("3_e224s")]
 position = Vector2(9401, 1128)
+rotation = 5.497787
 
 [node name="Ourico do mar47" parent="." unique_id=1507413954 instance=ExtResource("3_e224s")]
 position = Vector2(9478, 1079)
+rotation = 5.497787
 
 [node name="Ourico do mar48" parent="." unique_id=2133690186 instance=ExtResource("3_e224s")]
 position = Vector2(9543, 1029)
+rotation = 5.497787
 
 [node name="Ourico do mar49" parent="." unique_id=844384171 instance=ExtResource("3_e224s")]
 position = Vector2(9607, 985)
+rotation = 5.497787
 
 [node name="Ourico do mar50" parent="." unique_id=1406809746 instance=ExtResource("3_e224s")]
 position = Vector2(9643, 932)
+rotation = 5.497787
 
 [node name="Ourico do mar51" parent="." unique_id=387255269 instance=ExtResource("3_e224s")]
 position = Vector2(9686, 858)
+rotation = 5.497787
 
 [node name="Ourico do mar52" parent="." unique_id=387107732 instance=ExtResource("3_e224s")]
 position = Vector2(9706, 780)
+rotation = 5.497787
 
 [node name="Ourico do mar53" parent="." unique_id=889635727 instance=ExtResource("3_e224s")]
 position = Vector2(9720, 693)
+rotation = 5.497787
 
 [node name="Ourico do mar54" parent="." unique_id=1570531196 instance=ExtResource("3_e224s")]
 position = Vector2(10437, 838)
+rotation = 5.497787
 
 [node name="Ourico do mar55" parent="." unique_id=744931571 instance=ExtResource("3_e224s")]
 position = Vector2(10426, 896)
+rotation = 5.497787
 
 [node name="Ourico do mar56" parent="." unique_id=1619020573 instance=ExtResource("3_e224s")]
 position = Vector2(10391, 957)
+rotation = 5.497787
 
 [node name="Ourico do mar57" parent="." unique_id=459912070 instance=ExtResource("3_e224s")]
 position = Vector2(10349, 1030)
+rotation = 5.497787
 
 [node name="Ourico do mar58" parent="." unique_id=62818469 instance=ExtResource("3_e224s")]
 position = Vector2(10312, 1091)
+rotation = 5.497787
 
 [node name="Ourico do mar59" parent="." unique_id=1724277679 instance=ExtResource("3_e224s")]
 position = Vector2(10265, 1157)
+rotation = 5.497787
 
 [node name="Ourico do mar60" parent="." unique_id=1550147881 instance=ExtResource("3_e224s")]
 position = Vector2(10216, 1224)
+rotation = 5.497787
 
 [node name="Ourico do mar61" parent="." unique_id=160067917 instance=ExtResource("3_e224s")]
 position = Vector2(10155, 1275)
+rotation = 5.497787
 
 [node name="Ourico do mar62" parent="." unique_id=371413120 instance=ExtResource("3_e224s")]
 position = Vector2(10075, 1332)
+rotation = 5.497787
 
 [node name="Ourico do mar63" parent="." unique_id=215786408 instance=ExtResource("3_e224s")]
 position = Vector2(10012, 1382)
+rotation = 5.497787
 
 [node name="Ourico do mar64" parent="." unique_id=52918213 instance=ExtResource("3_e224s")]
 position = Vector2(9943, 1419)
+rotation = 5.497787
 
 [node name="Ourico do mar65" parent="." unique_id=116763279 instance=ExtResource("3_e224s")]
 position = Vector2(9880, 1459)
+rotation = 5.497787
 
 [node name="Ourico do mar66" parent="." unique_id=999332061 instance=ExtResource("3_e224s")]
 position = Vector2(9816, 1497)
+rotation = 5.497787
 
 [node name="Ourico do mar67" parent="." unique_id=1489495309 instance=ExtResource("3_e224s")]
 position = Vector2(9728, 1527)
+rotation = 5.497787
 
 [node name="Ourico do mar68" parent="." unique_id=1578541760 instance=ExtResource("3_e224s")]
 position = Vector2(16985, 2466)
@@ -569,21 +624,26 @@ position = Vector2(5267, 890)
 
 [node name="Ourico do mar94" parent="." unique_id=1636697323 instance=ExtResource("3_e224s")]
 position = Vector2(5698, 654)
+rotation = 4.712389
 
 [node name="Ourico do mar95" parent="." unique_id=1107431259 instance=ExtResource("3_e224s")]
 position = Vector2(5716, 599)
+rotation = 4.712389
 
 [node name="Ourico do mar96" parent="." unique_id=1996732255 instance=ExtResource("3_e224s")]
 position = Vector2(5742, 541)
+rotation = 4.712389
 
 [node name="Ourico do mar97" parent="." unique_id=1791498696 instance=ExtResource("3_e224s")]
 position = Vector2(5768, 486.00003)
+rotation = 4.712389
 
 [node name="Ourico do mar98" parent="." unique_id=838325856 instance=ExtResource("3_e224s")]
 position = Vector2(5603, 764)
 
 [node name="Ourico do mar105" parent="." unique_id=305693568 instance=ExtResource("3_e224s")]
 position = Vector2(1044, 1520)
+rotation = 4.712389
 
 [node name="Ourico do mar106" parent="." unique_id=1093300897 instance=ExtResource("3_e224s")]
 position = Vector2(1099, 1572)
@@ -596,12 +656,15 @@ position = Vector2(1208, 1717)
 
 [node name="Ourico do mar109" parent="." unique_id=1894927668 instance=ExtResource("3_e224s")]
 position = Vector2(935, 1314)
+rotation = 4.712389
 
 [node name="Ourico do mar110" parent="." unique_id=963339854 instance=ExtResource("3_e224s")]
 position = Vector2(970, 1375)
+rotation = 4.712389
 
 [node name="Ourico do mar111" parent="." unique_id=14473187 instance=ExtResource("3_e224s")]
 position = Vector2(1000, 1463)
+rotation = 4.712389
 
 [node name="Ourico do mar112" parent="." unique_id=866160767 instance=ExtResource("3_e224s")]
 position = Vector2(1290, 1755)
@@ -665,73 +728,96 @@ position = Vector2(5657, 713)
 
 [node name="Ourico do mar158" parent="." unique_id=671589808 instance=ExtResource("3_e224s")]
 position = Vector2(7506, 4950)
+rotation = 5.497787
 
 [node name="Ourico do mar159" parent="." unique_id=442314998 instance=ExtResource("3_e224s")]
 position = Vector2(7524, 4895)
+rotation = 5.497787
 
 [node name="Ourico do mar160" parent="." unique_id=576225162 instance=ExtResource("3_e224s")]
 position = Vector2(7550, 4837)
+rotation = 5.497787
 
 [node name="Ourico do mar161" parent="." unique_id=163233365 instance=ExtResource("3_e224s")]
 position = Vector2(7576, 4782)
+rotation = 5.497787
 
 [node name="Ourico do mar162" parent="." unique_id=97059959 instance=ExtResource("3_e224s")]
 position = Vector2(7465, 5009)
+rotation = 5.497787
 
 [node name="Ourico do mar163" parent="." unique_id=2009669647 instance=ExtResource("3_e224s")]
 position = Vector2(7642, 4668)
+rotation = 5.497787
 
 [node name="Ourico do mar164" parent="." unique_id=1950851895 instance=ExtResource("3_e224s")]
 position = Vector2(7674, 4615)
+rotation = 5.497787
 
 [node name="Ourico do mar165" parent="." unique_id=1252922479 instance=ExtResource("3_e224s")]
 position = Vector2(7705, 4553)
+rotation = 5.497787
 
 [node name="Ourico do mar166" parent="." unique_id=2139231459 instance=ExtResource("3_e224s")]
 position = Vector2(7718, 4494)
+rotation = 5.497787
 
 [node name="Ourico do mar167" parent="." unique_id=593500460 instance=ExtResource("3_e224s")]
 position = Vector2(7609, 4730)
+rotation = 5.497787
 
 [node name="Ourico do mar168" parent="." unique_id=1219194601 instance=ExtResource("3_e224s")]
 position = Vector2(7795, 4355)
+rotation = 5.497787
 
 [node name="Ourico do mar169" parent="." unique_id=1091468256 instance=ExtResource("3_e224s")]
 position = Vector2(7821, 4306)
+rotation = 5.497787
 
 [node name="Ourico do mar170" parent="." unique_id=1454767018 instance=ExtResource("3_e224s")]
 position = Vector2(7851, 4259)
+rotation = 5.497787
 
 [node name="Ourico do mar171" parent="." unique_id=1340276771 instance=ExtResource("3_e224s")]
 position = Vector2(7882, 4193)
+rotation = 5.497787
 
 [node name="Ourico do mar172" parent="." unique_id=964284296 instance=ExtResource("3_e224s")]
 position = Vector2(7765, 4428)
+rotation = 5.497787
 
 [node name="Ourico do mar173" parent="." unique_id=502987687 instance=ExtResource("3_e224s")]
 position = Vector2(7930, 4074)
+rotation = 5.497787
 
 [node name="Ourico do mar174" parent="." unique_id=1934365782 instance=ExtResource("3_e224s")]
 position = Vector2(7979, 4025)
+rotation = 5.497787
 
 [node name="Ourico do mar175" parent="." unique_id=1146598844 instance=ExtResource("3_e224s")]
 position = Vector2(8009, 3961)
+rotation = 5.497787
 
 [node name="Ourico do mar176" parent="." unique_id=1066348343 instance=ExtResource("3_e224s")]
 position = Vector2(8042, 3909)
+rotation = 5.497787
 
 [node name="Ourico do mar177" parent="." unique_id=1423554593 instance=ExtResource("3_e224s")]
 position = Vector2(7910, 4137)
+rotation = 5.497787
 
 [node name="Ourico do mar178" parent="." unique_id=1774414634 instance=ExtResource("3_e224s")]
 position = Vector2(8096, 3770)
+rotation = 5.497787
 
 [node name="Ourico do mar179" parent="." unique_id=1263402712 instance=ExtResource("3_e224s")]
 position = Vector2(8114, 3715)
+rotation = 5.497787
 
 [node name="Ourico do mar182" parent="." unique_id=1877324876 instance=ExtResource("3_e224s")]
 position = Vector2(8074, 3848)
+rotation = 5.497787
 
 [node name="NextLevelCollision" parent="." unique_id=707697642 instance=ExtResource("4_wcwf6")]
 position = Vector2(19154, 2431)
-next_level_reference = "uid://esv4e8s4h3q6"
+next_level_reference = "uid://bp4dhjutnry7f"
