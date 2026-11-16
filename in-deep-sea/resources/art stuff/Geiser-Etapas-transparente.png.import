@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://copvq65y323m6"
-path="res://.godot/imported/Plantas-e-Corais.png-bdf5e2f9e807f4f43d9b7e4e069df5f6.ctex"
+uid="uid://tjtuvkg5e1cm"
+path="res://.godot/imported/Geiser-Etapas-transparente.png-831b3a79df305a19c90596bcf1b37242.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://resources/art stuff/Plantas-e-Corais.png"
-dest_files=["res://.godot/imported/Plantas-e-Corais.png-bdf5e2f9e807f4f43d9b7e4e069df5f6.ctex"]
+source_file="res://resources/art stuff/Geiser-Etapas-transparente.png"
+dest_files=["res://.godot/imported/Geiser-Etapas-transparente.png-831b3a79df305a19c90596bcf1b37242.ctex"]
 
 [params]
 
