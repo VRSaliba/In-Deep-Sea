@@ -4,7 +4,8 @@ class_name Player
 @onready var camera: Camera2D = $Camera2D
 
 @onready var end_level_ui: CanvasLayer = $Camera2D/CanvasLayer
-@onready var label: Label = $Camera2D/CanvasLayer/MarginContainer/VBoxContainer/Label
+@onready var current_level_time_label: Label = $"Camera2D/CanvasLayer/MarginContainer/VBoxContainer/VBoxContainer/Level Time"
+@onready var final_level_time_label: Label = $"Camera2D/CanvasLayer/MarginContainer/VBoxContainer/Final Level Time"
 @onready var buttons_box_container: HBoxContainer = $Camera2D/CanvasLayer/MarginContainer/VBoxContainer/HBoxContainer
 
 var level_completed: bool = false
@@ -190,12 +191,12 @@ func _ready() -> void:
 	_update_dash_bar_color()
 
 func hide_end_level_ui() -> void:
-	label.hide()
+	final_level_time_label.hide()
 	buttons_box_container.hide()
 
 func show_end_level_ui() -> void:
 	end_level_ui.show()
-	label.show()
+	final_level_time_label.show()
 	buttons_box_container.show()
 
 func die() -> void:
@@ -211,6 +212,8 @@ func die() -> void:
 	get_tree().reload_current_scene()
 
 func _process(delta: float) -> void:
+	#current_level_time_label.text = "%02d:%02d.%03d" % [minutes, seconds, milliseconds]
+	
 	if not level_completed:
 		level_time += delta
 
@@ -646,7 +649,7 @@ func collided_with_next_level_portal(_next_level_reference: String) -> void:
 	var minutes = int(level_time) / 60
 	var seconds = int(level_time) % 60
 	var milliseconds = int(level_time * 1000) % 1000
-	label.text = "Time spent on this level: " + "%02d:%02d.%03d" % [minutes, seconds, milliseconds]
+	final_level_time_label.text = "Time spent on this level: " + "%02d:%02d.%03d" % [minutes, seconds, milliseconds]
 	show_end_level_ui()
 
 func _on_restart_button_pressed() -> void:

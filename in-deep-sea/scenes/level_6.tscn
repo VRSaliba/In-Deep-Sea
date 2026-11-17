@@ -26,13 +26,13 @@ position = Vector2(156, 1415)
 next_level_reference = "uid://esv4e8s4h3q6"
 
 [node name="Full Jumping Geiser" parent="." unique_id=641473488 instance=ExtResource("6_6x5s0")]
-position = Vector2(1208, 1188)
+position = Vector2(1208, 1201)
 
 [node name="Full Jumping Geiser2" parent="." unique_id=1690657866 instance=ExtResource("6_6x5s0")]
-position = Vector2(3239, 1188)
+position = Vector2(3239, 1201)
 
 [node name="Full Jumping Geiser3" parent="." unique_id=862037990 instance=ExtResource("6_6x5s0")]
-position = Vector2(6560, 1189)
+position = Vector2(6560, 1202)
 
 [node name="Ourico do mar53" parent="." unique_id=1022729656 instance=ExtResource("7_uwnnm")]
 position = Vector2(640, 360)
